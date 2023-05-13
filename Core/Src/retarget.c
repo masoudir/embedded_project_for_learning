@@ -21,6 +21,8 @@
 
 UART_HandleTypeDef *gHuart;
 
+
+
 void RetargetInit(UART_HandleTypeDef *huart) {
   gHuart = huart;
 

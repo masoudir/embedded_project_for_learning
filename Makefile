@@ -36,6 +36,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Src/app_ledblink.c \
 Core/Src/cli_parser.c \
 Core/Src/hw_drivers.c \
 Core/Src/app_game01.c \
@@ -198,6 +199,12 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $@		
 
+#######################################
+# flashing MCU
+#######################################
+flash:
+# sudo openocd -f ./openocd.cfg -c "program build/game01_nucleof446re.elf verify reset exit"
+	sudo openocd -f ./openocd.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 #######################################
 # clean up
 #######################################
