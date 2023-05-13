@@ -92,6 +92,7 @@ void cli_parser_init() {
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_APP_INDEX], CLI_PARSER_APP_COMMAND, 3); //app
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_READ_INDEX], CLI_PARSER_READ_COMMAND, 4); //read
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_WRITE_INDEX], CLI_PARSER_WRITE_COMMAND, 5); //write
+    cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_HELP_INDEX], CLI_PARSER_HELP_COMMAND, 4); //help
     
     cli_parser_add_string(&cli_parser_tag_list[CLI_PARSER_TAG_ENABLE_INDEX], CLI_PARSER_ENABLE_TAG, 6); //enable
     cli_parser_add_string(&cli_parser_tag_list[CLI_PARSER_TAG_DISABLE_INDEX], CLI_PARSER_DISABLE_TAG, 7); //disable
@@ -124,7 +125,7 @@ void cli_parser(char c) {
             printf("ERROR: MAX LENGTH FOR CMD REACHED! \r\n");
         break;
         case CLI_PARSER_SPECIAL_CHAR_DETECTED:
-            printf("Command \"%s\" is going to be executed \r\n.", cli_parser_total_cmd.buf);
+            printf(">>> Command \"%s\" is going to be executed.\r\n", cli_parser_total_cmd.buf);
             
              cli_parser_add_string(&cli_parser_part[cli_parser_word_order],
                                       &cli_parser_total_cmd.buf[cli_parser_last_word_index],
@@ -157,6 +158,10 @@ void cli_parser(char c) {
                     }
                     
                 }
+            } else if(cli_parser_compare_words(cli_parser_part[0], cli_parser_cmd_list[CLI_PARSER_CMD_HELP_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+                    printf("\r\n");
+                     printf("app list 	  --> to get the list of applications\r\napp <APP> enable  --> to enable <APP> \r\n app <APP> disable --> to disable <APP>\r\n");
+                        
             }
             
             cli_parser_reset();

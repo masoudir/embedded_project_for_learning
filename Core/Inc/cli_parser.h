@@ -32,6 +32,7 @@ extern "C" {
 #define CLI_PARSER_APP_COMMAND "app"
 #define CLI_PARSER_READ_COMMAND "read"
 #define CLI_PARSER_WRITE_COMMAND "write"
+#define CLI_PARSER_HELP_COMMAND "help"
 
 #define CLI_PARSER_ENABLE_TAG "enable"
 #define CLI_PARSER_DISABLE_TAG "disable"
@@ -49,7 +50,7 @@ extern "C" {
 #define CLI_PARSER_MAX_NUMBER_OF_WORDS 3
 
 #define CLI_PARSER_MAX_NUMBER_OF_APPS 10
-#define CLI_PARSER_MAX_NUMBER_OF_CMDS 3
+#define CLI_PARSER_MAX_NUMBER_OF_CMDS 10
 #define CLI_PARSER_MAX_NUMBER_OF_TAGS 10
 
 void cli_parser(char c);
@@ -86,7 +87,8 @@ typedef enum {
 typedef enum {
     CLI_PARSER_CMD_APP_INDEX = 0,
     CLI_PARSER_CMD_READ_INDEX = 1,
-    CLI_PARSER_CMD_WRITE_INDEX = 2
+    CLI_PARSER_CMD_WRITE_INDEX = 2,
+    CLI_PARSER_CMD_HELP_INDEX = 3
 } cli_parser_cmd_index_t;
 
 typedef enum {
