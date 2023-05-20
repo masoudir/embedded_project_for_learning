@@ -34,6 +34,7 @@ void init_gpio_output(GPIO_TypeDef* port, uint32_t pin);
 
 void init_uart(UART_HandleTypeDef* huart, USART_TypeDef* usart, uint32_t baudrate);
 
+void init_spi(SPI_HandleTypeDef* hspi);
 
 #ifdef __cplusplus
 }

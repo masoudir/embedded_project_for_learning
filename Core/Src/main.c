@@ -27,6 +27,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
+SPI_HandleTypeDef hspi2;
 
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
@@ -48,6 +49,7 @@ void StartDefaultTask(void const * argument)
   while(true) {
         //if(is_app_game01_running) {game01_task_timer();}
         if(is_app_ledblink_running) {app_ledblink_task1();}
+        
         osDelay(1);
   }
 }
@@ -63,6 +65,17 @@ void StartTask02(void const * argument)
   printf("\r\n task2 started \r\n");
   while(true) {
     char c = 0;
+
+
+        uint16_t tx_data = 0x31; //0b0000000000000000;
+        uint16_t rx_data = 0x00;
+        HAL_SPI_TransmitReceive(&hspi2, &tx_data, &rx_data, 1, 100);
+
+        // rx_data would be changed after that function
+
+
+
+        printf("\r\n spi rx=%04X \r\n", rx_data);
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     cli_parser(c);
@@ -102,6 +115,7 @@ void Setup() {
   init_gpio_output(LD2_GPIO_Port, LD2_Pin);
 
   init_uart(&huart2, USART2, 115200);
+  init_spi(&hspi2);
 
   /* To enable printf() support for UART2 */
   RetargetInit(&huart2);
