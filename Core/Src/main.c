@@ -67,10 +67,13 @@ void StartTask02(void const * argument)
     char c = 0;
 
 
-        uint16_t tx_data = 0x31; //0b0000000000000000;
+        uint16_t tx_data = 0x3140; //0b0000000000000000;
         uint16_t rx_data = 0x00;
         HAL_SPI_TransmitReceive(&hspi2, &tx_data, &rx_data, 1, 100);
 
+        tx_data = 0x8000; //0b0000000000000000;
+        rx_data = 0x00;
+        HAL_SPI_TransmitReceive(&hspi2, &tx_data, &rx_data, 1, 100);
         // rx_data would be changed after that function
 
 
