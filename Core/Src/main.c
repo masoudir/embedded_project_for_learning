@@ -68,18 +68,44 @@ void StartTask02(void const * argument)
     char c = 0;
 
 
-        uint16_t tx_data = 0x3100; //0b0000000000000000;
-        uint16_t rx_data = 0x00;
-        ACC_SPI_TransmitReceive(&tx_data, &rx_data, 100);
+        // uint16_t tx_data = 0x3100;
+        // uint16_t rx_data = 0x00;
 
-        tx_data = 0x8000; //0b0000000000000000;
-        rx_data = 0x00;
-        ACC_SPI_TransmitReceive(&tx_data, &rx_data, 100);
+        { // First frame
+                ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0,
+                  .ADDR = ACC_REG_DATA_FORMAT,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_WRITE_CMD
+                };
+
+                ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+        }
+
+        { // Second frame
+                ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0,
+                  .ADDR = ACC_REG_DEVID,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_READ_CMD
+                };
+
+                ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+
+                printf("\r\n spi rx=%02X \r\n", rx_frame.DATA_L);
+        }
+
     // rx_data would be changed after that function
 
 
 
-    printf("\r\n spi rx=%04X \r\n", rx_data);
+    
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     cli_parser(c);
@@ -119,7 +145,7 @@ void Setup() {
   init_gpio_output(LD2_GPIO_Port, LD2_Pin);
 
   init_uart(&huart2, USART2, 115200);
-  init_spi(&hspi2);
+  ACC_Init();
 
   /* To enable printf() support for UART2 */
   RetargetInit(&huart2);

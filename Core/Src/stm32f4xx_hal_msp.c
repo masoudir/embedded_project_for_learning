@@ -190,18 +190,6 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    {
-      GPIO_InitTypeDef gpio_cs = {
-        .Pin = GPIO_PIN_12,
-        .Mode = GPIO_MODE_OUTPUT_PP,
-        .Pull = GPIO_NOPULL,
-        .Speed = GPIO_SPEED_FREQ_HIGH,
-        .Alternate = 0
-      };
-
-      HAL_GPIO_Init(GPIOB, &gpio_cs);
-    }
-
   /* USER CODE BEGIN SPI2_MspInit 1 */
 
   /* USER CODE END SPI2_MspInit 1 */
