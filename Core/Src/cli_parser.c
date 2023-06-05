@@ -19,6 +19,7 @@
 
 bool is_app_ledblink_running;
 bool is_app_game01_running = false;
+bool is_app_uart_hw1_running;
 
 bool* is_app_running[CLI_PARSER_MAX_NUMBER_OF_APPS];
 
@@ -88,6 +89,7 @@ void cli_parser_init() {
     
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_LEDBLINK_INDEX], CLI_PARSER_APP_LEDBLINK_NAME, 8); //ledblink
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_GAME01_INDEX], CLI_PARSER_APP_GAME01_NAME, 6); //game01
+    cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_UART_INDEX], CLI_PARSER_APP_UART_NAME, 4); //uart
     
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_APP_INDEX], CLI_PARSER_APP_COMMAND, 3); //app
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_READ_INDEX], CLI_PARSER_READ_COMMAND, 4); //read
@@ -102,7 +104,9 @@ void cli_parser_init() {
     
     is_app_running[CLI_PARSER_APP_LEDBLINK_INDEX] = &is_app_ledblink_running;
     is_app_running[CLI_PARSER_APP_GAME01_INDEX] = &is_app_game01_running;
-}
+    is_app_running[CLI_PARSER_APP_UART_INDEX] = &is_app_uart_hw1_running;
+ }
+ 
 
 static int cli_parser_compare_text(char* str1, char* str2, unsigned int size) {
     return strncmp(str1, str2, size);
@@ -149,6 +153,14 @@ void cli_parser(char c) {
                         is_app_ledblink_running = false;
                     }
                 }
+                
+               
+           
+                else if(cli_parser_compare_words(cli_parser_part[1], cli_parser_app_list[CLI_PARSER_APP_UART_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+                         printf("your UART application is going to be executed\r\n");
+                        is_app_uart_hw1_running = true;
+                }
+                   
                 else if(cli_parser_compare_words(cli_parser_part[1], cli_parser_app_list[CLI_PARSER_APP_GAME01_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
                     
                 }

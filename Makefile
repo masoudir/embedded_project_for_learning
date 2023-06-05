@@ -38,6 +38,7 @@ BUILD_DIR = build
 C_SOURCES =  \
 Core/Src/app_accelerometer.c \
 Core/Src/app_ledblink.c \
+Core/Src/app_uart_hw1.c \
 Core/Src/cli_parser.c \
 Core/Src/hw_drivers.c \
 Core/Src/app_game01.c \

@@ -25,6 +25,7 @@
 #include "cli_parser.h"
 #include "app_ledblink.h"
 #include "app_accelerometer.h"
+#include "app_uart_hw1.h"
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
@@ -36,7 +37,7 @@ osThreadId myTask03Handle;
 
 extern bool is_app_game01_running;
 extern bool is_app_ledblink_running;
-
+extern bool is_app_uart_hw1_running;
 
 
 /**
@@ -50,6 +51,7 @@ void StartDefaultTask(void const * argument)
   while(true) {
         //if(is_app_game01_running) {game01_task_timer();}
         if(is_app_ledblink_running) {app_ledblink_task1();}
+        if(is_app_uart_hw1_running) {app_uart_hw1_task1();}
         
         osDelay(1);
   }

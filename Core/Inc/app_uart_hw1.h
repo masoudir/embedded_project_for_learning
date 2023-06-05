@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file           : app.h
-  * @brief          : Header for app.c file.
+  * @file           : app_uart_hw1.h
+  * @brief          : Header for app_uart_hw1.c file.
   *                   
   ******************************************************************************
   * @attention
@@ -15,37 +15,17 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __APP_GENERAL_H
-#define __APP_GENERAL_H
+#ifndef __APP_UART_HW1_H
+#define __APP_UART_HW1_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /* Includes ------------------------------------------------------------------*/
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>  //Header file for sleep(). man 3 sleep for details.
-// #include <pthread.h>
-#include <stdint.h>
-#include "main.h"
-#include "string.h"
-#include "cmsis_os.h"
-#include "retarget.h"
-#include <stdint.h>
-#include <string.h>
-#include "cli_parser.h"
-#include "app_ledblink.h"
-#include "app_uart_hw1.h"
+#include "app_general.h"
 
-#define UART_TIMEOUT 100
-
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-
-
+void app_uart_hw1_task1();
 
 
 
@@ -53,4 +33,4 @@ void SystemClock_Config(void);
 }
 #endif
 
-#endif /* __APP_GAME01_H */
+#endif /* __APP_UART_HW1_H */
