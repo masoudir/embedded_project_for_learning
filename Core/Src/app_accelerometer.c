@@ -21,6 +21,81 @@ extern SPI_HandleTypeDef hspi2;
 
 ACC_SPI_Config_t acc_spi_config = {0};
 
+
+void ACC_SPI_ConfigFullDuplexMode() {
+
+    ACC_REG_DATA_FORMAT_t data_format = {
+      .RANGE = 0,
+      .JUSTIFY = 0,
+      .FULL_RES = ACC_RES_13bits,
+      .RESERVED = 0,
+      .INT_INVERT = 0,
+      .SPI = 0,
+      .SELF_TEST = 0
+    };
+
+    ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = data_format,
+                  .ADDR = ACC_REG_DATA_FORMAT,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_WRITE_CMD
+    };
+
+    ACC_SPI_RX_Frame_t rx_frame = {0};
+    ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+}
+
+void ACC_SPI_GetDevID() {
+    ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0,
+                  .ADDR = ACC_REG_DEVID,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_READ_CMD
+                };
+
+    ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+    ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+
+    printf("\r\n spi rx=%02X \r\n", rx_frame.DATA_L);
+}
+
+void ACC_SPI_GetAccX0() {
+    ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0,
+                  .ADDR = ACC_REG_DATAX0,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_READ_CMD
+                };
+
+    ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+    ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+
+    printf("\r\n spi x0=%d \r\n", rx_frame);
+    
+}
+
+void ACC_SPI_GetAccX1() {
+    ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0,
+                  .ADDR = ACC_REG_DATAX1,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_READ_CMD
+                };
+
+    ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+    ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+
+    printf("\r\n spi x1=%d \r\n", rx_frame);
+    
+}
+
+
 void ACC_Init() {
     
     acc_spi_config.CS_PORT = GPIOB;

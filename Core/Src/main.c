@@ -64,6 +64,9 @@ void StartTask02(void const * argument)
 //void StartTask02()
 {
   printf("\r\n task2 started \r\n");
+
+  ACC_SPI_ConfigFullDuplexMode();
+  
   while(true) {
     char c = 0;
 
@@ -71,39 +74,14 @@ void StartTask02(void const * argument)
         // uint16_t tx_data = 0x3100;
         // uint16_t rx_data = 0x00;
 
-        { // First frame
-                ACC_SPI_TX_Frame_t tx_frame = {
-                  .DATA = 0,
-                  .ADDR = ACC_REG_DATA_FORMAT,
-                  .MB = ACC_SPI_SINGLE_PACKET,
-                  .WR = ACC_SPI_WRITE_CMD
-                };
 
-                ACC_SPI_RX_Frame_t rx_frame = {0};
-
-                
-                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
-        }
-
-        { // Second frame
-                ACC_SPI_TX_Frame_t tx_frame = {
-                  .DATA = 0,
-                  .ADDR = ACC_REG_DEVID,
-                  .MB = ACC_SPI_SINGLE_PACKET,
-                  .WR = ACC_SPI_READ_CMD
-                };
-
-                ACC_SPI_RX_Frame_t rx_frame = {0};
-
-                
-                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
-
-                printf("\r\n spi rx=%02X \r\n", rx_frame.DATA_L);
-        }
 
     // rx_data would be changed after that function
 
-
+    
+    ACC_SPI_GetDevID();
+    ACC_SPI_GetAccX0();
+    ACC_SPI_GetAccX1();
 
     
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
