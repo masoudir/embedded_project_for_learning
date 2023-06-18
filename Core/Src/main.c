@@ -66,6 +66,8 @@ void StartTask02(void const * argument)
   printf("\r\n task2 started \r\n");
 
   ACC_SPI_ConfigFullDuplexMode();
+
+  ACC_SPI_EnableMeasurement();
   
   while(true) {
     char c = 0;

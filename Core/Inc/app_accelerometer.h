@@ -63,9 +63,33 @@ typedef enum {
   ACC_REG_DEVID = 0x00,
   ACC_REG_THRESH_TAP = 0x1D,
   ACC_REG_OFSX = 0x1E,
+  ACC_REG_OFSY = 0x1F,
+  ACC_REG_OFSZ = 0x20,
+  ACC_REG_DUR = 0x21,
+  ACC_REG_LATENT = 0x22,
+  ACC_REG_WINDOW = 0x23,
+  ACC_REG_THRESH_ACT = 0x24,
+  ACC_REG_THRESH_INACT = 0x25,
+  ACC_REG_TIME_INACT = 0x26,
+  ACC_REG_ACT_INACT_CTL = 0x26,
+  ACC_REG_THRESH_FF = 0x28,
+  ACC_REG_TIME_FF = 0x29,
+  ACC_REG_TAP_AXES = 0x2A,
+  ACC_REG_ACT_TAP_STATUS = 0x2B,
+  ACC_REG_BW_RATE = 0x2C,
+  ACC_REG_POWER_CTL = 0x2D,
+  ACC_REG_INT_ENABLE = 0x2E,
+  ACC_REG_INT_MAP = 0x2F,
+  ACC_REG_INT_SOURCE = 0x30,
   ACC_REG_DATA_FORMAT = 0x31,
   ACC_REG_DATAX0 = 0x32,
-  ACC_REG_DATAX1 = 0x33
+  ACC_REG_DATAX1 = 0x33,
+  ACC_REG_DATAY0 = 0x32,
+  ACC_REG_DATAY1 = 0x33,
+  ACC_REG_DATAZ0 = 0x32,
+  ACC_REG_DATAZ1 = 0x33,
+  ACC_REG_FIFO_CTL = 0x32,
+  ACC_REG_FIFO_STATUS = 0x33
 } ACC_SPI_REG_ADDR_t;
 
 typedef struct {
@@ -82,6 +106,7 @@ void ACC_Init();
 HAL_StatusTypeDef ACC_SPI_TransmitReceive(ACC_SPI_TX_Frame_t* pTxData, ACC_SPI_RX_Frame_t* pRxData, uint32_t Timeout);
 
 void ACC_SPI_ConfigFullDuplexMode();
+void ACC_SPI_EnableMeasurement();
 void ACC_SPI_GetDevID();
 void ACC_SPI_GetAccX0();
 void ACC_SPI_GetAccX1();

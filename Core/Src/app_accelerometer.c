@@ -35,7 +35,7 @@ void ACC_SPI_ConfigFullDuplexMode() {
     };
 
     ACC_SPI_TX_Frame_t tx_frame = {
-                  .DATA = data_format,
+                  .DATA = (data_format & 0xff),
                   .ADDR = ACC_REG_DATA_FORMAT,
                   .MB = ACC_SPI_SINGLE_PACKET,
                   .WR = ACC_SPI_WRITE_CMD
@@ -74,7 +74,7 @@ void ACC_SPI_GetAccX0() {
                 
     ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
 
-    printf("\r\n spi x0=%d \r\n", rx_frame);
+    printf("\r\n spi x0=%d \r\n", (uint8_t)rx_frame);
     
 }
 
@@ -93,6 +93,20 @@ void ACC_SPI_GetAccX1() {
 
     printf("\r\n spi x1=%d \r\n", rx_frame);
     
+}
+
+void ACC_SPI_EnableMeasurement() {
+    ACC_SPI_TX_Frame_t tx_frame = {
+                  .DATA = 0b00001000,
+                  .ADDR = ACC_REG_POWER_CTL,
+                  .MB = ACC_SPI_SINGLE_PACKET,
+                  .WR = ACC_SPI_WRITE_CMD
+                };
+
+    ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+    ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
 }
 
 
