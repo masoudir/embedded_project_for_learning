@@ -103,10 +103,11 @@ void cli_parser_init() {
     is_app_running[CLI_PARSER_APP_LEDBLINK_INDEX] = &is_app_ledblink_running;
     is_app_running[CLI_PARSER_APP_GAME01_INDEX] = &is_app_game01_running;
 }
-
+/*
 static int cli_parser_compare_text(char* str1, char* str2, unsigned int size) {
     return strncmp(str1, str2, size);
-}
+}*/
+
 
 static cli_parser_compare_word_output_t cli_parser_compare_words(cli_parser_words_t word1, cli_parser_words_t word2) {
     if(word1.length == word2.length) {
