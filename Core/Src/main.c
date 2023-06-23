@@ -26,6 +26,7 @@
 #include "app_ledblink.h"
 #include "app_accelerometer.h"
 #include "app_uart_hw1.h"
+#include "app_card_reader_spi.h"
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
