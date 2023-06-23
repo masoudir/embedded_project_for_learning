@@ -67,6 +67,8 @@ void StartTask02(void const * argument)
 
   ACC_SPI_ConfigFullDuplexMode();
 
+  ACC_SPI_GetDevID();
+
   ACC_SPI_EnableMeasurement();
   
   while(true) {
@@ -81,16 +83,17 @@ void StartTask02(void const * argument)
     // rx_data would be changed after that function
 
     
-    ACC_SPI_GetDevID();
-    ACC_SPI_GetAccX0();
-    ACC_SPI_GetAccX1();
-
+    
+    ACC_SPI_GetAccX();
+    ACC_SPI_GetAccY();
+    ACC_SPI_GetAccZ();
+    ACC_printData();
     
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     cli_parser(c);
         //if(is_app_game01_running) {game01_task02();    }
-    osDelay(1);
+    osDelay(500);
   }
 
 }

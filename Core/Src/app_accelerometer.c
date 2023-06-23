@@ -21,6 +21,11 @@ extern SPI_HandleTypeDef hspi2;
 
 ACC_SPI_Config_t acc_spi_config = {0};
 
+int acc_output_x = 0;
+int acc_output_y = 0;
+int acc_output_z = 0;
+
+
 void ACC_SPI_ConfigFullDuplexMode()
 {
 
@@ -90,6 +95,115 @@ void ACC_SPI_GetAccX1()
 
   printf("\r\n spi x1=%d \r\n", rx_frame.R);
 }
+
+
+
+
+
+
+
+int ACC_CalculateOutputToIntegerFormat(uint16_t input, uint8_t number_of_bits) {
+    uint16_t mask = 1 << (number_of_bits - 1);  // 0b100
+    int output = 0;
+    
+    if((input & mask) != 0) {
+        output = input & (~(mask));
+        
+        output -= (1 << (number_of_bits - 1));
+    } else {
+        output = input;
+    }
+    return output;
+}
+
+
+
+void ACC_SPI_GetAccX() {
+
+  ACC_SPI_TX_Frame_t tx_frame = {.B = {
+                                     .DATA = 0,
+                                     .ADDR = ACC_REG_DATAX0,
+                                     .MB = ACC_SPI_SINGLE_PACKET,
+                                     .WR = ACC_SPI_READ_CMD}};
+
+  ACC_SPI_RX_Frame_t data_x0 = {0};
+  ACC_SPI_RX_Frame_t data_x1 = {0};
+
+  ACC_SPI_TransmitReceive(&tx_frame, &data_x0, 100);
+
+  tx_frame.B.ADDR = ACC_REG_DATAX1;
+  ACC_SPI_TransmitReceive(&tx_frame, &data_x1, 100);
+
+  uint16_t output = ((data_x1.R << 8) | data_x0.R) & 0x1fff;
+
+  int final_output = ACC_CalculateOutputToIntegerFormat(output, 13);
+
+  acc_output_x = final_output;
+
+}
+
+void ACC_SPI_GetAccY() {
+
+  ACC_SPI_TX_Frame_t tx_frame = {.B = {
+                                     .DATA = 0,
+                                     .ADDR = ACC_REG_DATAY0,
+                                     .MB = ACC_SPI_SINGLE_PACKET,
+                                     .WR = ACC_SPI_READ_CMD}};
+
+  ACC_SPI_RX_Frame_t data_y0 = {0};
+  ACC_SPI_RX_Frame_t data_y1 = {0};
+
+  ACC_SPI_TransmitReceive(&tx_frame, &data_y0, 100);
+
+  tx_frame.B.ADDR = ACC_REG_DATAY1;
+  ACC_SPI_TransmitReceive(&tx_frame, &data_y1, 100);
+
+  uint16_t output = ((data_y1.R << 8) | data_y0.R) & 0x1fff;
+
+  int final_output = ACC_CalculateOutputToIntegerFormat(output, 13);
+
+  acc_output_y = final_output;
+
+}
+
+void ACC_SPI_GetAccZ() {
+
+  ACC_SPI_TX_Frame_t tx_frame = {.B = {
+                                     .DATA = 0,
+                                     .ADDR = ACC_REG_DATAZ0,
+                                     .MB = ACC_SPI_SINGLE_PACKET,
+                                     .WR = ACC_SPI_READ_CMD}};
+
+  ACC_SPI_RX_Frame_t data_z0 = {0};
+  ACC_SPI_RX_Frame_t data_z1 = {0};
+
+  ACC_SPI_TransmitReceive(&tx_frame, &data_z0, 100);
+
+  tx_frame.B.ADDR = ACC_REG_DATAZ1;
+  ACC_SPI_TransmitReceive(&tx_frame, &data_z1, 100);
+
+  uint16_t output = ((data_z1.R << 8) | data_z0.R) & 0x1fff;
+
+  int final_output = ACC_CalculateOutputToIntegerFormat(output, 13);
+
+  acc_output_z = final_output;
+  
+
+}
+
+
+
+
+void ACC_printData() {
+  printf("\r\n ACC x=%d y=%d z=%d \r\n", acc_output_x, acc_output_y, acc_output_z);
+}
+
+
+
+
+
+
+
 
 void ACC_SPI_EnableMeasurement()
 {

@@ -98,12 +98,12 @@ extern "C"
     ACC_REG_DATA_FORMAT = 0x31,
     ACC_REG_DATAX0 = 0x32,
     ACC_REG_DATAX1 = 0x33,
-    ACC_REG_DATAY0 = 0x32,
-    ACC_REG_DATAY1 = 0x33,
-    ACC_REG_DATAZ0 = 0x32,
-    ACC_REG_DATAZ1 = 0x33,
-    ACC_REG_FIFO_CTL = 0x32,
-    ACC_REG_FIFO_STATUS = 0x33
+    ACC_REG_DATAY0 = 0x34,
+    ACC_REG_DATAY1 = 0x35,
+    ACC_REG_DATAZ0 = 0x36,
+    ACC_REG_DATAZ1 = 0x37,
+    ACC_REG_FIFO_CTL = 0x38,
+    ACC_REG_FIFO_STATUS = 0x39
   } ACC_SPI_REG_ADDR_t;
 
   typedef union
@@ -129,6 +129,11 @@ extern "C"
   void ACC_SPI_GetDevID();
   void ACC_SPI_GetAccX0();
   void ACC_SPI_GetAccX1();
+  void ACC_SPI_GetAccX();
+  void ACC_SPI_GetAccY();
+  void ACC_SPI_GetAccZ();
+
+  void ACC_printData();
 
 #ifdef __cplusplus
 }
