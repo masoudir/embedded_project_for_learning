@@ -17,9 +17,9 @@
 
 #include "cli_parser.h"
 
-bool is_app_ledblink_running;
+bool is_app_ledblink_running =false;
 bool is_app_game01_running = false;
-bool is_app_uart_hw1_running;
+bool is_app_uart_hw1_running =false;
 
 bool* is_app_running[CLI_PARSER_MAX_NUMBER_OF_APPS];
 
@@ -89,7 +89,7 @@ void cli_parser_init() {
     
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_LEDBLINK_INDEX], CLI_PARSER_APP_LEDBLINK_NAME, 8); //ledblink
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_GAME01_INDEX], CLI_PARSER_APP_GAME01_NAME, 6); //game01
-    cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_UART_INDEX], CLI_PARSER_APP_UART_NAME, 4); //uart
+    cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_UART_INDEX], CLI_PARSER_APP_UART_NAME, 8); //uart_hw1
     
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_APP_INDEX], CLI_PARSER_APP_COMMAND, 3); //app
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_READ_INDEX], CLI_PARSER_READ_COMMAND, 4); //read

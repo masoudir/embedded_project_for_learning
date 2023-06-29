@@ -39,6 +39,9 @@ osThreadId myTask03Handle;
 extern bool is_app_game01_running;
 extern bool is_app_ledblink_running;
 extern bool is_app_uart_hw1_running;
+bool mutex_value= false;
+extern osMutexId  myMutex01Handle;
+
 
 
 /**
@@ -50,11 +53,20 @@ void StartDefaultTask(void const * argument)
 {
   printf("\r\n task1 started \r\n");
   while(true) {
+     
         //if(is_app_game01_running) {game01_task_timer();}
         if(is_app_ledblink_running) {app_ledblink_task1();}
-        if(is_app_uart_hw1_running) {app_uart_hw1_task1();}
-        
-        osDelay(1);
+
+       
+
+        if(is_app_uart_hw1_running) {
+           if (xSemaphoreTake(myMutex01Handle, 0) == pdTRUE) {
+            {app_uart_hw1_task1();}
+                mutex_value = true;
+                osDelay(1);
+         xSemaphoreGive( myMutex01Handle );    
+        }
+    }   
   }
 }
 
@@ -74,50 +86,53 @@ void StartTask02(void const * argument)
         // uint16_t tx_data = 0x3100;
         // uint16_t rx_data = 0x00;
 
-        { // First frame
-                ACC_SPI_TX_Frame_t tx_frame = {
-                  .DATA = 0,
-                  .ADDR = ACC_REG_DATA_FORMAT,
-                  .MB = ACC_SPI_SINGLE_PACKET,
-                  .WR = ACC_SPI_WRITE_CMD
-                };
+        // { // First frame
+        //         ACC_SPI_TX_Frame_t tx_frame = {
+        //           .DATA = 0,
+        //           .ADDR = ACC_REG_DATA_FORMAT,
+        //           .MB = ACC_SPI_SINGLE_PACKET,
+        //           .WR = ACC_SPI_WRITE_CMD
+        //         };
 
-                ACC_SPI_RX_Frame_t rx_frame = {0};
-
-                
-                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
-        }
-
-        { // Second frame
-                ACC_SPI_TX_Frame_t tx_frame = {
-                  .DATA = 0,
-                  .ADDR = ACC_REG_DEVID,
-                  .MB = ACC_SPI_SINGLE_PACKET,
-                  .WR = ACC_SPI_READ_CMD
-                };
-
-                ACC_SPI_RX_Frame_t rx_frame = {0};
+        //         ACC_SPI_RX_Frame_t rx_frame = {0};
 
                 
-                ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+        //         ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+        // }
 
-                printf("\r\n spi rx=%02X \r\n", rx_frame.DATA_L);
-        }
+        // { // Second frame
+        //         ACC_SPI_TX_Frame_t tx_frame = {
+        //           .DATA = 0,
+        //           .ADDR = ACC_REG_DEVID,
+        //           .MB = ACC_SPI_SINGLE_PACKET,
+        //           .WR = ACC_SPI_READ_CMD
+        //         };
+
+        //         ACC_SPI_RX_Frame_t rx_frame = {0};
+
+                
+        //         ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
+
+        //         printf("\r\n spi rx=%02X \r\n", rx_frame.DATA_L);
+        // }
 
     // rx_data would be changed after that function
 
 
-
-    
+ if (xSemaphoreTake(myMutex01Handle, 0) == pdTRUE){
+    if(mutex_value){
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     cli_parser(c);
-        //if(is_app_game01_running) {game01_task02();    }
-    osDelay(1);
+     osDelay(1);
+    mutex_value = false;
+     }
+     xSemaphoreGive( myMutex01Handle );    
+ }
+
+        //if(is_app_game01_running) {game01_task02();    
   }
-
 }
-
 /**
 * @brief Function implementing the myTask03 thread.
 * @param argument: Not used

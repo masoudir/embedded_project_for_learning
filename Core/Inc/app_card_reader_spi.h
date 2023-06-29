@@ -16,11 +16,11 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __APP_RFID_H
-#define __APP_RFID_H
+// #ifndef __APP_RFID_H
+// #define __APP_RFID_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-}
-#define byte uint8_t
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
+// }
+// #define byte uint8_t
