@@ -19,6 +19,7 @@
 
 bool is_app_ledblink_running;
 bool is_app_game01_running = false;
+bool is_app_acc_running = false;
 
 bool* is_app_running[CLI_PARSER_MAX_NUMBER_OF_APPS];
 
@@ -88,6 +89,7 @@ void cli_parser_init() {
     
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_LEDBLINK_INDEX], CLI_PARSER_APP_LEDBLINK_NAME, 8); //ledblink
     cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_GAME01_INDEX], CLI_PARSER_APP_GAME01_NAME, 6); //game01
+    cli_parser_add_string(&cli_parser_app_list[CLI_PARSER_APP_ACC_INDEX], CLI_PARSER_APP_ACC_NAME, 13); //ACC
     
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_APP_INDEX], CLI_PARSER_APP_COMMAND, 3); //app
     cli_parser_add_string(&cli_parser_cmd_list[CLI_PARSER_CMD_READ_INDEX], CLI_PARSER_READ_COMMAND, 4); //read
@@ -102,6 +104,7 @@ void cli_parser_init() {
     
     is_app_running[CLI_PARSER_APP_LEDBLINK_INDEX] = &is_app_ledblink_running;
     is_app_running[CLI_PARSER_APP_GAME01_INDEX] = &is_app_game01_running;
+    is_app_running[CLI_PARSER_APP_ACC_INDEX] = &is_app_acc_running;
 }
 /*
 static int cli_parser_compare_text(char* str1, char* str2, unsigned int size) {
@@ -116,6 +119,23 @@ static cli_parser_compare_word_output_t cli_parser_compare_words(cli_parser_word
         }
     }
     return CLI_PARSER_CMP_TEXT_DIFFERENT;
+}
+
+
+static bool cli_parser_is_first_word_this_cmd(cli_parser_cmd_index_t cmd_index) {
+    return (cli_parser_compare_words(cli_parser_part[0], cli_parser_cmd_list[cmd_index]) == CLI_PARSER_CMP_TEXT_EQUAL);
+}
+
+static bool cli_parser_is_second_word_related_to_this_app(cli_parser_app_index_t app_index) {
+    return (cli_parser_compare_words(cli_parser_part[1], cli_parser_app_list[app_index]) == CLI_PARSER_CMP_TEXT_EQUAL);
+}
+
+static bool cli_parser_is_second_word_related_to_this_tag(cli_parser_tag_index_t tag_index) {
+    return (cli_parser_compare_words(cli_parser_part[1], cli_parser_tag_list[tag_index]) == CLI_PARSER_CMP_TEXT_EQUAL);
+}
+
+static bool cli_parser_is_third_word_related_to_this_tag(cli_parser_tag_index_t tag_index) {
+    return (cli_parser_compare_words(cli_parser_part[2], cli_parser_tag_list[tag_index]) == CLI_PARSER_CMP_TEXT_EQUAL);
 }
 
 void cli_parser(char c) {
@@ -139,27 +159,39 @@ void cli_parser(char c) {
             //int cmp1 = cli_parser_compare_text(cli_parser_part[0].buf, CLI_PARSER_APP_COMMAND, cli_parser_part[cli_parser_word_order].length);
             //if(cmp1 == 0) {printf("New Word is app");}
 
-            if(cli_parser_compare_words(cli_parser_part[0], cli_parser_cmd_list[CLI_PARSER_CMD_APP_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
-                if(cli_parser_compare_words(cli_parser_part[1], cli_parser_app_list[CLI_PARSER_APP_LEDBLINK_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
-                    if(cli_parser_compare_words(cli_parser_part[2], cli_parser_tag_list[CLI_PARSER_TAG_ENABLE_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+            if(cli_parser_is_first_word_this_cmd(CLI_PARSER_CMD_APP_INDEX)) {
+                if(cli_parser_is_second_word_related_to_this_app(CLI_PARSER_APP_LEDBLINK_INDEX)) {
+                    if(cli_parser_is_third_word_related_to_this_tag(CLI_PARSER_TAG_ENABLE_INDEX)) {
                          printf("your ledblink application is going to be executed\r\n");
                          is_app_ledblink_running = true;
                         
-                    } else if (cli_parser_compare_words(cli_parser_part[2], cli_parser_tag_list[CLI_PARSER_TAG_DISABLE_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+                    } else if (cli_parser_is_third_word_related_to_this_tag(CLI_PARSER_TAG_DISABLE_INDEX)) {
                         printf("your ledblink application is now stopped\r\n");
                         is_app_ledblink_running = false;
                     }
                 }
-                else if(cli_parser_compare_words(cli_parser_part[1], cli_parser_app_list[CLI_PARSER_APP_GAME01_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+
+                if(cli_parser_is_second_word_related_to_this_app(CLI_PARSER_APP_ACC_INDEX)) {
+                    if(cli_parser_is_third_word_related_to_this_tag(CLI_PARSER_TAG_ENABLE_INDEX)) {
+                         printf("your ledblink application is going to be executed\r\n");
+                         is_app_acc_running = true;
+                        
+                    } else if (cli_parser_is_third_word_related_to_this_tag(CLI_PARSER_TAG_DISABLE_INDEX)) {
+                        printf("your ledblink application is now stopped\r\n");
+                        is_app_acc_running = false;
+                    }
+                }
+
+                else if(cli_parser_is_second_word_related_to_this_app(CLI_PARSER_APP_GAME01_INDEX)) {
                     
                 }
-                else if(cli_parser_compare_words(cli_parser_part[1], cli_parser_tag_list[CLI_PARSER_TAG_LIST_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+                else if(cli_parser_is_second_word_related_to_this_tag(CLI_PARSER_TAG_LIST_INDEX)) {
                     for(unsigned int j = 0; j < CLI_PARSER_APP_GAME01_INDEX + 1; j++) {
                         printf("app%d=%s\tis_running=%d\r\n", j, cli_parser_app_list[j].buf, *is_app_running[j]);
                     }
                     
                 }
-            } else if(cli_parser_compare_words(cli_parser_part[0], cli_parser_cmd_list[CLI_PARSER_CMD_HELP_INDEX]) == CLI_PARSER_CMP_TEXT_EQUAL) {
+            } else if(cli_parser_is_first_word_this_cmd(CLI_PARSER_CMD_HELP_INDEX)) {
                     printf("\r\n");
                      printf("app list 	  --> to get the list of applications\r\napp <APP> enable  --> to enable <APP> \r\n app <APP> disable --> to disable <APP>\r\n");
                         

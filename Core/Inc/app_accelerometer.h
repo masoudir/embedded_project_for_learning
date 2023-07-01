@@ -23,14 +23,24 @@ extern "C"
 {
 #endif
 
+#define ACC_ADXL345_DEV_ID 0xE5
+
   /* Includes ------------------------------------------------------------------*/
 
 #include "app_general.h"
 
   typedef struct
   {
-    GPIO_TypeDef *CS_PORT; // PORT NAME OF CS
-    uint16_t CS_PIN;       // PIN NAME OF CS
+    GPIO_TypeDef *port; // PORT NAME OF CS
+    uint16_t pin;       // PIN NAME OF CS
+  } GPIO_Details_t;
+
+  typedef struct
+  {
+    GPIO_Details_t cs;
+    GPIO_Details_t mosi;
+    GPIO_Details_t miso;
+    GPIO_Details_t clk;
   } ACC_SPI_Config_t;
 
   typedef union
@@ -126,7 +136,7 @@ extern "C"
 
   void ACC_SPI_ConfigFullDuplexMode();
   void ACC_SPI_EnableMeasurement();
-  void ACC_SPI_GetDevID();
+  uint8_t ACC_SPI_GetDevID();
   void ACC_SPI_GetAccX0();
   void ACC_SPI_GetAccX1();
   void ACC_SPI_GetAccX();
@@ -134,6 +144,10 @@ extern "C"
   void ACC_SPI_GetAccZ();
 
   void ACC_printData();
+
+  void ACC_SPI_PinsConfig();
+
+  void ACC_task1();
 
 #ifdef __cplusplus
 }

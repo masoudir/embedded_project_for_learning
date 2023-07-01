@@ -36,7 +36,7 @@ osThreadId myTask03Handle;
 
 extern bool is_app_game01_running;
 extern bool is_app_ledblink_running;
-
+extern bool is_app_acc_running;
 
 
 /**
@@ -50,7 +50,7 @@ void StartDefaultTask(void const * argument)
   while(true) {
         //if(is_app_game01_running) {game01_task_timer();}
         if(is_app_ledblink_running) {app_ledblink_task1();}
-        
+        if(is_app_acc_running) {ACC_task1();}
         osDelay(1);
   }
 }
@@ -65,35 +65,14 @@ void StartTask02(void const * argument)
 {
   printf("\r\n task2 started \r\n");
 
-  ACC_SPI_ConfigFullDuplexMode();
-
-  ACC_SPI_GetDevID();
-
-  ACC_SPI_EnableMeasurement();
-  
   while(true) {
     char c = 0;
-
-
-        // uint16_t tx_data = 0x3100;
-        // uint16_t rx_data = 0x00;
-
-
-
-    // rx_data would be changed after that function
-
-    
-    
-    ACC_SPI_GetAccX();
-    ACC_SPI_GetAccY();
-    ACC_SPI_GetAccZ();
-    ACC_printData();
     
     HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     cli_parser(c);
         //if(is_app_game01_running) {game01_task02();    }
-    osDelay(500);
+    osDelay(1);
   }
 
 }

@@ -19,7 +19,24 @@
 
 extern SPI_HandleTypeDef hspi2;
 
-ACC_SPI_Config_t acc_spi_config = {0};
+ACC_SPI_Config_t acc_spi_config = {
+  .cs = {
+    .port = GPIOB,
+    .pin = GPIO_PIN_12
+  },
+  .mosi = {
+    .port = GPIOC,
+    .pin = GPIO_PIN_1
+  },
+  .miso = {
+    .port = GPIOC,
+    .pin = GPIO_PIN_2
+  },
+  .clk = {
+    .port = GPIOB,
+    .pin = GPIO_PIN_10
+  }
+};
 
 int acc_output_x = 0;
 int acc_output_y = 0;
@@ -50,7 +67,7 @@ void ACC_SPI_ConfigFullDuplexMode()
   ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
 }
 
-void ACC_SPI_GetDevID()
+uint8_t ACC_SPI_GetDevID()
 {
   ACC_SPI_TX_Frame_t tx_frame = {
       .B = {
@@ -64,6 +81,8 @@ void ACC_SPI_GetDevID()
   ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
 
   printf("\r\n spi rx=%02X \r\n", rx_frame.B.DATA_L);
+
+  return rx_frame.B.DATA_L;
 }
 
 void ACC_SPI_GetAccX0()
@@ -218,29 +237,99 @@ void ACC_SPI_EnableMeasurement()
   ACC_SPI_TransmitReceive(&tx_frame, &rx_frame, 100);
 }
 
+void ACC_SPI_PinsConfig() {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    __HAL_RCC_SPI2_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+
+    /**SPI2 GPIO Configuration
+    PC1     ------> SPI2_MOSI
+    PC2     ------> SPI2_MISO
+    PB10     ------> SPI2_SCK
+    PB12     ------> SPI2_NSS
+    */
+    GPIO_InitStruct.Pin = acc_spi_config.mosi.pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
+    HAL_GPIO_Init(acc_spi_config.mosi.port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = acc_spi_config.miso.pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+    HAL_GPIO_Init(acc_spi_config.miso.port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = acc_spi_config.clk.pin;//GPIO_PIN_10|GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+    HAL_GPIO_Init(acc_spi_config.clk.port, &GPIO_InitStruct);
+}
+
+
 void ACC_Init()
 {
 
-  acc_spi_config.CS_PORT = GPIOB;
-  acc_spi_config.CS_PIN = GPIO_PIN_12;
-
   GPIO_InitTypeDef gpio_cs = {
-      .Pin = acc_spi_config.CS_PIN,
+      .Pin = acc_spi_config.cs.pin,
       .Mode = GPIO_MODE_OUTPUT_PP,
       .Pull = GPIO_NOPULL,
       .Speed = GPIO_SPEED_FREQ_HIGH,
       .Alternate = 0};
 
-  HAL_GPIO_Init(acc_spi_config.CS_PORT, &gpio_cs);
+  HAL_GPIO_Init(acc_spi_config.cs.port, &gpio_cs);
 
-  init_spi(&hspi2);
+  hspi2 = (SPI_HandleTypeDef) {
+    .Instance = SPI2,
+    .Init = {
+      .Mode = SPI_MODE_MASTER,
+      .Direction = SPI_DIRECTION_2LINES,
+      .DataSize = SPI_DATASIZE_16BIT,
+      .CLKPolarity = SPI_POLARITY_HIGH,
+      .CLKPhase = SPI_PHASE_2EDGE,
+      .NSS = SPI_NSS_HARD_OUTPUT,
+      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128,
+      .FirstBit = SPI_FIRSTBIT_MSB,
+      .TIMode = SPI_TIMODE_DISABLE,
+      .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
+      .CRCPolynomial = 10
+    }
+  };
+
+  if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  ACC_SPI_ConfigFullDuplexMode();
+
+  if(ACC_SPI_GetDevID() == ACC_ADXL345_DEV_ID) {
+      ACC_SPI_EnableMeasurement();
+  }
+
+  
 }
+
 
 HAL_StatusTypeDef ACC_SPI_TransmitReceive(ACC_SPI_TX_Frame_t *pTxData, ACC_SPI_RX_Frame_t *pRxData, uint32_t Timeout)
 {
   HAL_StatusTypeDef status;
-  HAL_GPIO_WritePin(acc_spi_config.CS_PORT, acc_spi_config.CS_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(acc_spi_config.cs.port, acc_spi_config.cs.pin, GPIO_PIN_RESET);
   status = HAL_SPI_TransmitReceive(&hspi2, (uint8_t *)pTxData, (uint8_t *)pRxData, 2, Timeout);
-  HAL_GPIO_WritePin(acc_spi_config.CS_PORT, acc_spi_config.CS_PIN, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(acc_spi_config.cs.port, acc_spi_config.cs.pin, GPIO_PIN_SET);
   return status;
+}
+
+void ACC_task1() {
+    ACC_SPI_GetAccX();
+    ACC_SPI_GetAccY();
+    ACC_SPI_GetAccZ();
+    ACC_printData();
 }

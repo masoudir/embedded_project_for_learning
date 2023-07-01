@@ -38,6 +38,7 @@ extern "C" {
 #include <string.h>
 #include "cli_parser.h"
 #include "app_ledblink.h"
+#include "app_accelerometer.h"
 #include "hw_drivers.h"
 
 #define UART_TIMEOUT 100

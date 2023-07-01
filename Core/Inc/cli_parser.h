@@ -42,6 +42,7 @@ extern "C" {
 
 #define CLI_PARSER_APP_GAME01_NAME "game01"
 #define CLI_PARSER_APP_LEDBLINK_NAME "ledblink"
+#define CLI_PARSER_APP_ACC_NAME "accelerometer"
 
 #define CLI_PARSER_DEV_NAME_ADC "adc"
 #define CLI_PARSER_DEV_NAME_GPIO "gpio"
@@ -81,7 +82,8 @@ typedef enum {
 
 typedef enum {
     CLI_PARSER_APP_LEDBLINK_INDEX = 0,
-    CLI_PARSER_APP_GAME01_INDEX = 1
+    CLI_PARSER_APP_GAME01_INDEX = 1,
+    CLI_PARSER_APP_ACC_INDEX = 2
 } cli_parser_app_index_t;
 
 typedef enum {
