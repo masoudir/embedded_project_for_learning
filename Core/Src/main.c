@@ -38,6 +38,7 @@ extern bool is_app_game01_running;
 extern bool is_app_ledblink_running;
 extern bool is_app_acc_running;
 
+static SemaphoreHandle_t mutex;
 
 /**
   * @brief  Function implementing the defaultTask thread.
@@ -48,9 +49,15 @@ void StartDefaultTask(void const * argument)
 {
   printf("\r\n task1 started \r\n");
   while(true) {
+
+        if (xSemaphoreTake(mutex, 0) == pdTRUE) {
+          printf("\r\n task1 mutex locked \r\n");
+          osDelay(10);
+          xSemaphoreGive(mutex);
+        }
         //if(is_app_game01_running) {game01_task_timer();}
-        if(is_app_ledblink_running) {app_ledblink_task1();}
-        if(is_app_acc_running) {ACC_task1();}
+        // if(is_app_ledblink_running) {app_ledblink_task1();}
+        // if(is_app_acc_running) {ACC_task1();}
         osDelay(1);
   }
 }
@@ -67,10 +74,14 @@ void StartTask02(void const * argument)
 
   while(true) {
     char c = 0;
-    
-    HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
-    HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
-    cli_parser(c);
+    if (xSemaphoreTake(mutex, 0) == pdTRUE) {
+          printf("\r\n task2 mutex locked \r\n");
+          osDelay(10);
+          xSemaphoreGive(mutex);
+        }
+    // HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
+    // HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
+    // cli_parser(c);
         //if(is_app_game01_running) {game01_task02();    }
     osDelay(1);
   }
@@ -115,13 +126,15 @@ void Setup() {
 
   printf("\r\n =============== \r\n Initiating tasks ... \r\n");
 
+  mutex = xSemaphoreCreateMutex();
+
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 512);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 1024);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityNormal, 0, 512);
+  osThreadDef(myTask02, StartTask02, osPriorityNormal, 0, 1024);
   myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
   /* definition and creation of myTask03 */
