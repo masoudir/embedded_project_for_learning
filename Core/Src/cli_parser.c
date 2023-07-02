@@ -186,7 +186,7 @@ void cli_parser(char c) {
                     
                 }
                 else if(cli_parser_is_second_word_related_to_this_tag(CLI_PARSER_TAG_LIST_INDEX)) {
-                    for(unsigned int j = 0; j < CLI_PARSER_APP_GAME01_INDEX + 1; j++) {
+                    for(unsigned int j = 0; j < CLI_PARSER_APP_ACC_INDEX + 1; j++) {
                         printf("app%d=%s\tis_running=%d\r\n", j, cli_parser_app_list[j].buf, *is_app_running[j]);
                     }
                     
