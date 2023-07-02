@@ -40,6 +40,9 @@ extern bool is_app_acc_running;
 
 static SemaphoreHandle_t mutex;
 
+char task1_c_array[100+5] = "";
+char task2_c_array[100+5] = "";
+
 /**
   * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used
@@ -48,10 +51,15 @@ static SemaphoreHandle_t mutex;
 void StartDefaultTask(void const * argument)
 {
   printf("\r\n task1 started \r\n");
+  // char c_array[100+5] = "";
   while(true) {
+
+        memset(task1_c_array, 0, 2*sizeof(char));
 
         if (xSemaphoreTake(mutex, 0) == pdTRUE) {
           printf("\r\n task1 mutex locked \r\n");
+          HAL_UART_Receive(&huart2, (uint8_t *)task1_c_array, 2, 1000); //UART_TIMEOUT
+          printf("task1: %s \r\n", task1_c_array);
           osDelay(10);
           xSemaphoreGive(mutex);
         }
@@ -71,17 +79,29 @@ void StartTask02(void const * argument)
 //void StartTask02()
 {
   printf("\r\n task2 started \r\n");
-
+  // char c_array[100+5] = "";
   while(true) {
     char c = 0;
+
+    memset(task2_c_array, 0, 50*sizeof(char));
+
     if (xSemaphoreTake(mutex, 0) == pdTRUE) {
           printf("\r\n task2 mutex locked \r\n");
+          HAL_UART_Receive(&huart2, (uint8_t *)task2_c_array, 50, 4000); //UART_TIMEOUT
+          printf("task2: %s \r\n", task2_c_array);
+
+          uint8_t ii = 0;
+          for(ii = 0; task2_c_array[ii] != 0; ++ii) {
+            c = task2_c_array[ii];
+            cli_parser(c);
+          }
+
           osDelay(10);
           xSemaphoreGive(mutex);
         }
     // HAL_UART_Receive(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
     // HAL_UART_Transmit(&huart2, (uint8_t *)&c, 1, UART_TIMEOUT);
-    // cli_parser(c);
+    // 
         //if(is_app_game01_running) {game01_task02();    }
     osDelay(1);
   }
