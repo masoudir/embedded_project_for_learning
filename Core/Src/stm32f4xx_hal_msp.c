@@ -159,6 +159,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
   if(hspi->Instance==SPI2)
   {
     ACC_SPI_PinsConfig();
+    MFRC522_SPI_PinsConfig();
   }
 
 }

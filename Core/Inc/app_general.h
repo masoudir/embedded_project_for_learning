@@ -41,6 +41,8 @@ extern "C" {
 #include "app_accelerometer.h"
 #include "hw_drivers.h"
 
+#include "MFRC522.h"
+
 #define UART_TIMEOUT 100
 
 /* Private function prototypes -----------------------------------------------*/
