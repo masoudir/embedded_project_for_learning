@@ -169,12 +169,15 @@ void MFRC522_writeToRegister(byte addr, byte val) {
  */
 /**************************************************************************/
 byte MFRC522_readFromRegister(byte addr) {
-  byte val;
-  digitalWrite(_sad, LOW);
-  SPI.transfer(((addr<<1)&0x7E) | 0x80);
-  val =SPI.transfer(0x00);
-  digitalWrite(_sad, HIGH);
-  return val;
+  byte frame1_tx = ((addr<<1)&0x7E) | 0x80;
+  byte frame_rx = 0;
+
+  HAL_GPIO_WritePin(mfrc522_spi_config.cs.port, mfrc522_spi_config.cs.pin, GPIO_PIN_RESET);
+  MFRC522_SPI_TransmitReceive(&frame1_tx, &frame_rx, MFRC522_SPI_TIMEOUT_MS);
+  frame1_tx = 0;
+  MFRC522_SPI_TransmitReceive(&frame1_tx, &frame_rx, MFRC522_SPI_TIMEOUT_MS);
+  HAL_GPIO_WritePin(mfrc522_spi_config.cs.port, mfrc522_spi_config.cs.pin, GPIO_PIN_SET);
+  return frame_rx;
 }
 
 /**************************************************************************/
@@ -189,8 +192,8 @@ byte MFRC522_readFromRegister(byte addr) {
 /**************************************************************************/
 void MFRC522_setBitMask(byte addr, byte mask) {
   byte current;
-  current = readFromRegister(addr);
-  writeToRegister(addr, current | mask);
+  current = MFRC522_readFromRegister(addr);
+  MFRC522_writeToRegister(addr, current | mask);
 }
 
 /**************************************************************************/
@@ -205,8 +208,8 @@ void MFRC522_setBitMask(byte addr, byte mask) {
 /**************************************************************************/
 void MFRC522_clearBitMask(byte addr, byte mask) {
   byte current;
-  current = readFromRegister(addr);
-  writeToRegister(addr, current & (~mask));
+  current = MFRC522_readFromRegister(addr);
+  MFRC522_writeToRegister(addr, current & (~mask));
 }
 
 /**************************************************************************/
@@ -217,20 +220,19 @@ void MFRC522_clearBitMask(byte addr, byte mask) {
  */
 /**************************************************************************/
 void MFRC522_begin() {
-  digitalWrite(_sad, HIGH);
 
-  reset();
+  MFRC522_reset();
 
   //Timer: TPrescaler*TreloadVal/6.78MHz = 24ms
-  writeToRegister(TModeReg, 0x8D);       // Tauto=1; f(Timer) = 6.78MHz/TPreScaler
-  writeToRegister(TPrescalerReg, 0x3E);  // TModeReg[3..0] + TPrescalerReg
-  writeToRegister(TReloadRegL, 30);
-  writeToRegister(TReloadRegH, 0);
+  MFRC522_writeToRegister(TModeReg, 0x8D);       // Tauto=1; f(Timer) = 6.78MHz/TPreScaler
+  MFRC522_writeToRegister(TPrescalerReg, 0x3E);  // TModeReg[3..0] + TPrescalerReg
+  MFRC522_writeToRegister(TReloadRegL, 30);
+  MFRC522_writeToRegister(TReloadRegH, 0);
 
-  writeToRegister(TxAutoReg, 0x40);      // 100%ASK
-  writeToRegister(ModeReg, 0x3D);        // CRC initial value 0x6363
+  MFRC522_writeToRegister(TxAutoReg, 0x40);      // 100%ASK
+  MFRC522_writeToRegister(ModeReg, 0x3D);        // CRC initial value 0x6363
 
-  setBitMask(TxControlReg, 0x03);        // Turn antenna on.
+  MFRC522_setBitMask(TxControlReg, 0x03);        // Turn antenna on.
 }
 
 /**************************************************************************/
@@ -241,7 +243,7 @@ void MFRC522_begin() {
  */
 /**************************************************************************/
 void MFRC522_reset() {
-  writeToRegister(CommandReg, MFRC522_SOFTRESET);
+  MFRC522_writeToRegister(CommandReg, MFRC522_SOFTRESET);
 }
 
 /**************************************************************************/
@@ -255,7 +257,7 @@ void MFRC522_reset() {
 /**************************************************************************/
 byte MFRC522_getFirmwareVersion() {
   byte response;
-  response = readFromRegister(VersionReg);
+  response = MFRC522_readFromRegister(VersionReg);
   return response;
 }
 
@@ -300,22 +302,22 @@ boolean MFRC522_digitalSelfTestPass() {
       return false;
   }
 
-  reset();
-  writeToRegister(FIFODataReg, 0x00);
-  writeToRegister(CommandReg, MFRC522_MEM);
-  writeToRegister(AutoTestReg, 0x09);
-  writeToRegister(FIFODataReg, 0x00);
-  writeToRegister(CommandReg, MFRC522_CALCCRC);
+  MFRC522_reset();
+  MFRC522_writeToRegister(FIFODataReg, 0x00);
+  MFRC522_writeToRegister(CommandReg, MFRC522_MEM);
+  MFRC522_writeToRegister(AutoTestReg, 0x09);
+  MFRC522_writeToRegister(FIFODataReg, 0x00);
+  MFRC522_writeToRegister(CommandReg, MFRC522_CALCCRC);
 
   // Wait for the self test to complete.
   i = 0xFF;
   do {
-    n = readFromRegister(DivIrqReg);
+    n = MFRC522_readFromRegister(DivIrqReg);
     i--;
   } while ((i != 0) && !(n & 0x04));
 
   for (i=0; i < 64; i++) {
-    if (readFromRegister(FIFODataReg) != selfTestResult[i]) {
+    if (MFRC522_readFromRegister(FIFODataReg) != selfTestResult[i]) {
       Serial.println(i);
       return false;
     }
