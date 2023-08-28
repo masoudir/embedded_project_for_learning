@@ -28,10 +28,10 @@ ACC_SPI_Config_t acc_spi_config = {
     .port = GPIOC,
     .pin = GPIO_PIN_1
   },
-  .miso = {
-    .port = GPIOC,
-    .pin = GPIO_PIN_2
-  },
+  //.miso = {
+    //.port = GPIOC,
+    //.pin = GPIO_PIN_2
+  //},
   .clk = {
     .port = GPIOB,
     .pin = GPIO_PIN_10
@@ -43,7 +43,8 @@ int acc_output_y = 0;
 int acc_output_z = 0;
 
 
-void ACC_SPI_ConfigFullDuplexMode()
+//void ACC_SPI_ConfigFullDuplexMode()
+void ACC_SPI_halfDuplexMode()
 {
 
   ACC_REG_DATA_FORMAT_t data_format = {
@@ -53,7 +54,7 @@ void ACC_SPI_ConfigFullDuplexMode()
           .FULL_RES = ACC_RES_13bits,
           .RESERVED = 0,
           .INT_INVERT = 0,
-          .SPI = 0,
+          .SPI = 1,
           .SELF_TEST = 0}};
 
   ACC_SPI_TX_Frame_t tx_frame = {
@@ -251,12 +252,12 @@ void ACC_SPI_PinsConfig() {
     PB10     ------> SPI2_SCK
     PB12     ------> SPI2_NSS
     */
-    GPIO_InitStruct.Pin = acc_spi_config.mosi.pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
-    HAL_GPIO_Init(acc_spi_config.mosi.port, &GPIO_InitStruct);
+    //GPIO_InitStruct.Pin = acc_spi_config.mosi.pin;
+    //GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    //GPIO_InitStruct.Pull = GPIO_NOPULL;
+    //GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    //GPIO_InitStruct.Alternate = GPIO_AF7_SPI2;
+    //HAL_GPIO_Init(acc_spi_config.mosi.port, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = acc_spi_config.miso.pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -290,7 +291,7 @@ void ACC_Init()
     .Instance = SPI2,
     .Init = {
       .Mode = SPI_MODE_MASTER,
-      .Direction = SPI_DIRECTION_2LINES,
+      .Direction = SPI_DIRECTION_1LINES,
       .DataSize = SPI_DATASIZE_16BIT,
       .CLKPolarity = SPI_POLARITY_HIGH,
       .CLKPhase = SPI_PHASE_2EDGE,
