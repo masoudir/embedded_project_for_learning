@@ -5,7 +5,7 @@
       "name": "Debug-STM32WL",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/build/game01_nucleof446re.elf",
+      "program": "${workspaceRoot}/build/stm32f4446re_test.elf",
       "args": [],
       "stopAtEntry": true,
       "cwd": "${workspaceRoot}",
@@ -21,7 +21,7 @@
           "text": "cd ${workspaceRoot}"
         },
         {
-          "text": "file build/game01_nucleof446re.elf",
+          "text": "file build/stm32f4446re_test.elf",
           "description": "load file",
           "ignoreFailures": false
         },

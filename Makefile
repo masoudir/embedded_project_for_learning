@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = game01_nucleof446re
+TARGET = stm32f4446re_test
 
 
 ######################################
@@ -205,7 +205,7 @@ $(BUILD_DIR):
 # flashing MCU
 #######################################
 flash:
-# sudo openocd -f ./openocd.cfg -c "program build/game01_nucleof446re.elf verify reset exit"
+# sudo openocd -f ./openocd.cfg -c "program build/stm32f4446re_test.elf verify reset exit"
 	sudo openocd -f ./openocd.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
 #######################################
 # clean up
