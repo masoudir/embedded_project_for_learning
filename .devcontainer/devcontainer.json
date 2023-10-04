@@ -1,0 +1,12 @@
+{
+	"extensions": [
+		"coolchyni.beyond-debug",
+		"DamianKoper.gdb-debug",
+		"mcu-debug.debug-tracker-vscode",
+		"mcu-debug.memory-view",
+		"mcu-debug.rtos-views",
+		"ms-vscode.cmake-tools",
+		"ms-vscode.cpptools",
+		"twxs.cmake"
+	]
+}
