@@ -108,8 +108,8 @@ target_link_options(${target} PUBLIC
     -mfloat-abi=hard
     -specs=nano.specs
     -specs=nosys.specs
-    -T${ProjectSourceFolderPath}/STM32F446RETx_FLASH.ld
-    -MMD -MP -MF"${ProjectSourceFolderPath}/${MY_OUT_DIR}/startup_stm32f446xx.d" ${ProjectSourceFolderPath}/startup_stm32f446xx.s
+    -T${ProjectSourceFolderPath}/Drivers/STM32F446RETx_FLASH.ld
+    # -MMD -MP -MF"${ProjectSourceFolderPath}/${MY_OUT_DIR}/startup_stm32f446xx.d" ${ProjectSourceFolderPath}/Drivers/startup_stm32f446xx.s
     -lc
     -lm
     -lnosys
@@ -120,7 +120,7 @@ target_link_options(${target} PUBLIC
 
 
 
-AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Core)
+AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Projects/${PROJECT_CORE_FILES})
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/STM32F4xx_HAL_Driver)
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/CMSIS/Include)
@@ -130,7 +130,7 @@ AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Middlewares/Third_Party/
 
 
 target_include_directories(${target} PUBLIC ${includeDirlist})
-target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Core)
+target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Projects/${PROJECT_CORE_FILES})
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/STM32F4xx_HAL_Driver/Inc)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/CMSIS/Include)
@@ -140,31 +140,8 @@ target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Middlewar
 
 
 target_sources(${target} PUBLIC 
-    # ${ProjectSourceFolderPath}/startup_stm32f446xx.s
+    ${ProjectSourceFolderPath}/Drivers/startup_stm32f446xx.s
     ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
-    # ${ProjectSourceFolderPath}/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
 )
 
 set_target_properties( ${target} 
@@ -180,8 +157,16 @@ add_custom_command(TARGET ${target}
         COMMAND ${ELF_CONVERTER} -O binary -S ${OUTPUT_NAME}.elf ${OUTPUT_NAME}.bin
         COMMAND ${SZ} ${OUTPUT_NAME}.elf
         VERBATIM
-)        
+)  
 
+if(DO_FLASH STREQUAL "YES")
+    add_custom_command(TARGET ${target}
+            POST_BUILD
+            COMMENT Flashing MCU
+            COMMAND sudo openocd -f ${ProjectSourceFolderPath}/openocd.cfg -c "program ${OUTPUT_NAME}.elf verify reset exit"
+            VERBATIM
+    ) 
 
+endif()
 
 
