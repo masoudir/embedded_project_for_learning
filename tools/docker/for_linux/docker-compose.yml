@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  stm32_service:
+    image: stm32_image:latest
+    container_name: "stm32_embedded_environment"
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - stm32_volume:/workspaces
+      - ${HOME}/workspaces:/sync-workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev:/dev
+    network_mode: "host"
+    tty: true
+
+volumes:
+  stm32_volume:
+    external: true
+  

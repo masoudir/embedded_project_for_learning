@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  infineon_service:
+    image: infineon_image:latest
+    container_name: "infineon_embedded_environment"
+    volumes:
+      - infineon_volume:/workspaces
+      - /c/workspaces:/sync-workspace
+    network_mode: "host"
+    tty: true
+
+volumes:
+  infineon_volume:
+    external: true
+   
