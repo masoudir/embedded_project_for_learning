@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     coreutils \
     make \
     cmake \
+    gcc-arm-none-eabi \
+    gdb-arm-none-eabi \
     gcc \
     gdb \
     gdb-multiarch \
