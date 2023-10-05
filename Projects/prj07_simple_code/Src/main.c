@@ -24,7 +24,49 @@
 UART_HandleTypeDef huart2;
 
 
+void init_system_basic_clock() {
+    
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
+  
+  /* Configure the system clock */
+//  SystemClock_Config();
+
+
+    /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+}
+
+void init_gpio_input(GPIO_TypeDef* port, uint32_t pin, uint32_t it_mode) {
+
+    GPIO_InitTypeDef gpio = {
+        .Pin = pin,
+        .Mode = it_mode,
+        .Pull = GPIO_NOPULL,
+        .Speed = GPIO_SPEED_FREQ_LOW,
+        .Alternate = 0
+    };
+
+    HAL_GPIO_Init(port, &gpio);
+}
+
+void init_gpio_output(GPIO_TypeDef* port, uint32_t pin) {
+
+     GPIO_InitTypeDef gpio = {
+        .Pin = pin,
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Speed = GPIO_SPEED_FREQ_LOW,
+        .Alternate = 0
+    };
+
+    HAL_GPIO_Init(port, &gpio);
+}
 
 
 /**
@@ -128,21 +170,21 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+void init_uart(UART_HandleTypeDef* huart, USART_TypeDef* usart, uint32_t baudrate) {
 
-
-void init_uart() {
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
+  huart->Instance = usart;
+  huart->Init.BaudRate = baudrate;
+  huart->Init.WordLength = UART_WORDLENGTH_8B;
+  huart->Init.StopBits = UART_STOPBITS_1;
+  huart->Init.Parity = UART_PARITY_NONE;
+  huart->Init.Mode = UART_MODE_TX_RX;
+  huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart->Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(huart) != HAL_OK)
   {
     Error_Handler();
   }
+
 }
 
 
@@ -151,18 +193,17 @@ void Setup() {
  /* MCU Configuration--------------------------------------------------------*/
 
     /* MCU Configuration--------------------------------------------------------*/
-    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  init_system_basic_clock();
 
+  /* Initialize all configured peripherals */
+  
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-    /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+  init_gpio_input(B1_GPIO_Port, B1_Pin, GPIO_MODE_IT_FALLING);
+  init_gpio_output(LD2_GPIO_Port, LD2_Pin);
 
-
-  init_uart();
+  init_uart(&huart2, USART2, 115200);
 
 
   /* To enable printf() support for UART2 */
@@ -170,36 +211,6 @@ void Setup() {
 
 
   printf("\r\n =============== \r\n Initiating tasks ... \r\n");
-
-
-  // Init GPIO
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = GPIO_PIN_5,
-      .Mode = GPIO_MODE_OUTPUT_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_LOW,
-      .Alternate = 0
-    };
-
-    HAL_GPIO_Init(GPIOA, &gpio_config);
-  }
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-          .Pin = GPIO_PIN_13,
-          .Mode = GPIO_MODE_INPUT,
-          .Pull = GPIO_NOPULL,
-          .Speed = GPIO_SPEED_FREQ_LOW,
-          .Alternate = 0
-    };
-
-    HAL_GPIO_Init(GPIOC, &gpio_config);
-  }
-
-
-
 
 }
 
