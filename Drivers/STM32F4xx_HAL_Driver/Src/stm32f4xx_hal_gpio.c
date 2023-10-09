@@ -479,7 +479,7 @@ HAL_StatusTypeDef HAL_GPIO_LockPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
     return HAL_OK;
   }
   else
-  {
+  {HAL_GPIO_Init
     return HAL_ERROR;
   }
 }

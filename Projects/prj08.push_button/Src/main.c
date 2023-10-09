@@ -212,7 +212,7 @@ int main(void)
   Setup();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
-  uint8_t button_val =0;
+  uint8_t button_val =0;{PROJECT_CORE_FILES
   while (1)
   {
     //StartTask02();
