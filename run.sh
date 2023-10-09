@@ -29,5 +29,10 @@ rm -r *
 echo 'cleaned successfully'
 cd ..
 
-fi
+elif [ $1 == 'DO_picocom' ]
+then
 
+   sudo picocom -b 115200 /dev/ttyACM0
+
+cd ..
+fi

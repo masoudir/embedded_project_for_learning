@@ -169,4 +169,13 @@ if(DO_FLASH STREQUAL "YES")
 
 endif()
 
+if(DO_picocom STREQUAL "YES")
+    add_custom_command(TARGET ${target}
+            POST_BUILD
+            COMMENT picocom MCU
+            COMMAND  sudo picocom -b 115200 /dev/ttyACM0
+            VERBATIM
+    ) 
+
+endif()
 

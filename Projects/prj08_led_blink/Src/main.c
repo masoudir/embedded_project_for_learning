@@ -110,11 +110,6 @@ void Error_Handler(void)
   {
 
   
-HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-printf("hello");
-HAL_Delay(1000);
-HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-HAL_Delay(1000);
 
 
 }
@@ -213,17 +208,28 @@ void Setup() {
 
 
 }
-}
+
 /**
   * @brief  The application entry point.
-  * @retval int   printf("Hello, printf!\r\n");
+  * @retval int
+  */
+int main(void)
+{
+  Setup();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
-  while(1)
+  while (1)
   {
-    //StartTask02();
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+    printf(" RIRA");
+HAL_Delay(1000);
+HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+HAL_Delay(1000);
+
   }
+ 
 }
+
   
  
 
