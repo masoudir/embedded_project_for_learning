@@ -124,25 +124,34 @@ AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Projects/${PROJECT_CORE_
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/STM32F4xx_HAL_Driver)
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Drivers/CMSIS/Include)
+
+if(IS_FREERTOS_ENABLED STREQUAL "YES")
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS)
 AddSourceNotRecursive(${target} ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source)
 AddSourceRecursive(${target} ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F)
-
+endif()
 
 target_include_directories(${target} PUBLIC ${includeDirlist})
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Projects/${PROJECT_CORE_FILES})
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/STM32F4xx_HAL_Driver/Inc)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Drivers/CMSIS/Include)
+
+if(IS_FREERTOS_ENABLED STREQUAL "YES")
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/include)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS)
 target_include_directories(${target} PUBLIC ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F)
-
+endif()
 
 target_sources(${target} PUBLIC 
     ${ProjectSourceFolderPath}/Drivers/startup_stm32f446xx.s
+)
+
+if(IS_FREERTOS_ENABLED STREQUAL "YES")
+target_sources(${target} PUBLIC 
     ${ProjectSourceFolderPath}/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
 )
+endif()
 
 set_target_properties( ${target} 
         PROPERTIES LINKER_LANGUAGE C

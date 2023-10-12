@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#./run.sh compile_flash prj01_cli_parser
+#./run.sh compile_flash prj01_cli_parser NO
 
 if [ $1 == 'compile_flash' ]
 then
 mkdir -p build
 cd build
-cmake -DPROJECT_CORE_FILES=$2 -DDO_FLASH=YES ..
+cmake -DPROJECT_CORE_FILES=$2 -DDO_FLASH=YES -DIS_FREERTOS_ENABLED=$3 ..
 make -j11
 
 cd ..
@@ -15,7 +15,7 @@ elif [ $1 == 'compile_only' ]
 then
 mkdir -p build
 cd build
-cmake -DPROJECT_CORE_FILES=$2 -DDO_FLASH=NO ..
+cmake -DPROJECT_CORE_FILES=$2 -DDO_FLASH=NO -DIS_FREERTOS_ENABLED=$3 ..
 make -j11
 
 cd ..
@@ -27,6 +27,14 @@ mkdir -p build
 cd build
 rm -r *
 echo 'cleaned successfully'
+cd ..
+
+elif [ $1 == 'monitor' ]
+then
+mkdir -p build
+cd build
+rm -r *
+sudo picocom -b 115200 /dev/ttyACM0
 cd ..
 
 fi
