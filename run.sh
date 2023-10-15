@@ -37,5 +37,9 @@ rm -r *
 sudo picocom -b 115200 /dev/ttyACM0
 cd ..
 
+elif [ $1 == 'flash' ]
+then
+sudo openocd -f openocd.cfg -c "program build/stm32f4446re_test.elf verify reset exit"
+
 fi
 
