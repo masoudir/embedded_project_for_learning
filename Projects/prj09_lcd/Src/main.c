@@ -19,10 +19,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "GUI_Paint.h"
+#include "fonts.h"
+#include "image.h"
+#include "LCD_Test.h"
+
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-
+SPI_HandleTypeDef hspi2;
 
 
 
@@ -146,6 +151,7 @@ void init_uart() {
 
 
 
+
 void Setup() {
  /* MCU Configuration--------------------------------------------------------*/
 
@@ -159,6 +165,8 @@ void Setup() {
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  __HAL_RCC_SPI2_CLK_ENABLE();
 
 
   init_uart();
@@ -197,8 +205,96 @@ void Setup() {
     HAL_GPIO_Init(GPIOC, &gpio_config);
   }
 
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = DC_Pin|RST_Pin,
+      .Mode = GPIO_MODE_OUTPUT_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_LOW,
+      .Alternate = 0
+    };
+
+    HAL_GPIO_Init(GPIOA, &gpio_config);
+  }
+
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = CS_Pin,
+      .Mode = GPIO_MODE_OUTPUT_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_LOW,
+      .Alternate = 0
+    };
+
+    HAL_GPIO_Init(CS_GPIO_Port, &gpio_config);
+  }
 
 
+    /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, DC_Pin|RST_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
+
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_MOSI_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF7_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_MOSI_PORT, &gpio_config);
+  }
+
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_MISO_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF5_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_MISO_PORT, &gpio_config);
+  }  
+
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_CLK_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF5_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_CLK_PORT, &gpio_config);
+  }    
+
+  hspi2 = (SPI_HandleTypeDef) {
+    .Instance = SPI2,
+    .Init = {
+      .Mode = SPI_MODE_MASTER,
+      .Direction = SPI_DIRECTION_2LINES,
+      .DataSize = SPI_DATASIZE_8BIT,
+      .CLKPolarity = SPI_POLARITY_LOW,
+      .CLKPhase = SPI_PHASE_1EDGE,
+      .NSS = SPI_NSS_SOFT,
+      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4,
+      .FirstBit = SPI_FIRSTBIT_MSB,
+      .TIMode = SPI_TIMODE_DISABLE,
+      .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
+      .CRCPolynomial = 10
+    }
+  };
+
+  if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  LCD_2in4_test();
 
 }
 
