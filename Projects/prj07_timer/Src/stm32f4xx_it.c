@@ -217,7 +217,7 @@ void SysTick_Handler(void)
 void TIM2_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim2);
-  HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
 }
 
 /* USER CODE BEGIN 1 */

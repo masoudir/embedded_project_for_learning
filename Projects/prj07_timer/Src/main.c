@@ -57,6 +57,15 @@ static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 
+bool array_[5] = {};
+
+void my_function() {
+  uint8_t i = 0;
+  for(i = 0; i < 5; ++i) {
+    array_[i] = true;
+  }
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   HAL_UART_Transmit(&huart2, (const uint8_t*)"tick", 4, 100);
@@ -106,6 +115,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
+
+  my_function();
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
