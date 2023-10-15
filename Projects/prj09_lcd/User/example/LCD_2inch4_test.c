@@ -27,9 +27,9 @@ void LCD_2in4_test()
 	Paint_SetRotate(ROTATE_0);
 	Paint_DrawString_EN (5, 10, "DEMO:",        &Font24,    YELLOW,  RED);
 	Paint_DrawString_EN (5, 34, "Hello Olivia",  &Font24,    BLUE,    CYAN);
-  Paint_DrawFloatNum  (5, 150 ,987.654321,5,  &Font20,    WHITE,   LIGHTBLUE);
-  Paint_DrawString_EN (5,170, "WaveShare",    &Font24,    WHITE,   BLUE);
-  Paint_DrawString_CN (5,190, "΢ѩ����",     &Font24CN,  WHITE,   RED);
+//   Paint_DrawFloatNum  (5, 150 ,987.654321,5,  &Font20,    WHITE,   LIGHTBLUE);
+//   Paint_DrawString_EN (5,170, "WaveShare",    &Font24,    WHITE,   BLUE);
+//   Paint_DrawString_CN (5,190, "΢ѩ����",     &Font24CN,  WHITE,   RED);
   
 	Paint_DrawRectangle (125, 240, 225, 300,    RED     ,DOT_PIXEL_2X2,DRAW_FILL_EMPTY);
 	Paint_DrawLine      (125, 240, 225, 300,    MAGENTA ,DOT_PIXEL_2X2,LINE_STYLE_SOLID);
@@ -40,7 +40,7 @@ void LCD_2in4_test()
 	Paint_DrawCircle(210,100,  25,        RED     ,DOT_PIXEL_2X2,DRAW_FILL_EMPTY);
 	Paint_DrawCircle(165,125,  25,        YELLOW  ,DOT_PIXEL_2X2,DRAW_FILL_EMPTY);
 	Paint_DrawCircle(195,125,  25,        GREEN   ,DOT_PIXEL_2X2,DRAW_FILL_EMPTY);
-  
+	Paint_DrawString_EN (5, 170, "Good morning",  &Font24,    BLUE,    CYAN);
   Paint_DrawImage(gImage_1,5,70,60,60);
 	
   
