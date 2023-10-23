@@ -234,15 +234,17 @@ for (j=0; j< 4 ; j++){
   }
  }
 }
- void read_col(){
-   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
-  return 0;}
+
+ int read_col(){
+  
    if (HAL_GPIO_ReadPin( GPIOC,col[0] ==1) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
   return 1;}
    if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==1 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
   return 2;}
    if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==1){
   return 3;}
+  else{
+  return 0;}
  }
 
 
