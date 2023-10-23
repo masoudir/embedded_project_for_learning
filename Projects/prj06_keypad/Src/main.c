@@ -31,7 +31,7 @@ char lookup_table[4][3]={
 {'7' , '8' , '9'},
 {'*' , '5' , '#'},
 
-}
+};
 
 
 /**
@@ -235,13 +235,13 @@ for (j=0; j< 4 ; j++){
  }
 }
  void read_col(){
-   if HAL_GPIO_ReadPin( col[0] ==0 && col[1] ==0 && col[2] ==0){
+   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
   return 0;}
-  if HAL_GPIO_ReadPin( col[0] ==1 && col[1] ==0 && col[2] ==0){
+   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==1) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
   return 1;}
-  if HAL_GPIO_ReadPin( col[0] ==0 && col[1] ==1 && col[2] ==0){
+   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==1 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
   return 2;}
-  if HAL_GPIO_ReadPin( col[0] ==0 && col[1] ==0 && col[2] ==1){
+   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==1){
   return 3;}
  }
 
