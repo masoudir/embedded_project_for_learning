@@ -19,6 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+__UINT32_t timer1ms =0;
+__UINT32_t captime[4]={};
+bool is_clicked =0;
+bool is_doubleclicked =0;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -66,9 +70,39 @@ void my_function() {
   }
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void TIM2_IRQHandler(void)
 {
-  HAL_UART_Transmit(&huart2, (const uint8_t*)"tick", 4, 100);
+  HAL_TIM_IRQHandler(&htim2);
+  HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+  ++timer1ms;
+   if(HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_pin)){
+    captime[0]= timer1ms;
+
+       if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_pin) == 0){
+        captime[1]= timer1ms;
+
+          if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_pin)){
+                 captime[2]= timer1ms;
+                   
+                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_pin == 0)){
+                 captime[3]= timer1ms;
+          }
+       }
+    }
+  }
+      if (captime[1]- captime[0] > 40){
+        is_clicked =1;
+
+        if ((captime[3]- captime[2] > 40) && (is_clicked =1)){
+          if (captime[2]- captime[1] >20 ){
+                 is_doubleclicked =1;
+           else{
+           is_doubleclicked = 0; }
+           return is_doubleclicked;     
+      }
+      return is_clicked;
+  }
+}
 }
 /* USER CODE BEGIN PFP */
 
@@ -262,7 +296,7 @@ static void MX_TIM2_Init(void)
                      = 8,000
                      = 0x1F40
     */
-    htim2.Init.Period = 8000;
+    htim2.Init.Period = 16;
         
     /*
         Finally initialize Timer-2

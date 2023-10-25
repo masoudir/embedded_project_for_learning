@@ -18,20 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "read_key.h"
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-gpio_config row[4]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9};
-gpio_config col[3]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8};
+char row[4]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9};
+char col[3]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8};
 
-char lookup_table[4][3]={
-{'1' , '2' , '3'},
-{'4' , '5' , '6'},
-{'7' , '8' , '9'},
-{'*' , '5' , '#'},
 
-};
 
 
 /**
@@ -179,12 +174,12 @@ void Setup() {
   printf("\r\n =============== \r\n Initiating tasks ... \r\n");
 
 
-// Init GPIO_out_for_col();
+// Init GPIO_out_for_row();
 
   {
     GPIO_InitTypeDef gpio_config = {
       .Pin = col[0]|col[1]| col[2],
-      .Mode = GPIO_MODE_OUTPUT_PP,
+      .Mode = GPIO_MODE_INPUT,
       .Pull = GPIO_NOPULL,
       .Speed = GPIO_SPEED_FREQ_LOW,
       .Alternate = 0
@@ -196,10 +191,21 @@ void Setup() {
   {
     GPIO_InitTypeDef gpio_config = {
           .Pin =    row[0]| row[1]| row[2] | row[3], 
-          .Mode = GPIO_MODE_INPUT,
+          .Mode = GPIO_MODE_OUTPUT_PP,
           .Pull = GPIO_NOPULL,
           .Speed = GPIO_SPEED_FREQ_LOW,
           .Alternate = 0
+    };
+
+    HAL_GPIO_Init(GPIOA, &gpio_config);
+  }
+{
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = GPIO_PIN_5,
+      .Mode = GPIO_MODE_OUTPUT_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_LOW,
+      .Alternate = 0
     };
 
     HAL_GPIO_Init(GPIOA, &gpio_config);
@@ -214,53 +220,17 @@ void Setup() {
   */
 int main(void)
 {
+ 
   Setup();
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   while (1)
   {
     //StartTask02();
-  }
+
+HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+HAL_Delay(500);
+   read_keypad();
+}
+}
  
-}
-void set_row(uint8_t i){
-int j;
-for (j=0; j< 4 ; j++){
- if (j==i){
-  HAL_GPIO_WritePin(GPIOA ,row[i], SET);
- }
- else{
-  HAL_GPIO_WritePin(GPIOA, row[i], RESET);
-  }
- }
-}
-
- int read_col(){
-  
-   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==1) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
-  return 1;}
-   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==1 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
-  return 2;}
-   if (HAL_GPIO_ReadPin( GPIOC,col[0] ==0) && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==1){
-  return 3;}
-  else{
-  return 0;}
- }
-
-
-
-void read_keypad(){
-int column , i;
-char button;
-for (i=0; i<4 ;i++)
-{
-  set_row(i);
-  column = read_col();
-  if(column > 0 ){
-    button = lookup_table[i][column-1];
-    printf(" %c pressed ",button);
-  }
-}
-
-
-}
