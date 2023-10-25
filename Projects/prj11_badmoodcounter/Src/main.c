@@ -46,7 +46,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
-
+uint32_t count0=0;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -62,11 +62,12 @@ void TIM2_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim2);
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
-  if (HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET) {
+  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
           count0++;
-          if(count0>=5){
-            LCD_mode==LCD_mode_1;
-            count=0;
+          if(count0>=2){
+            HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
+           // LCD_mode==LCD_mode_1;
+            count0=0;
           }
          }
             
@@ -75,7 +76,7 @@ void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim3);
-  HAL_UART_Transmit(&huart2, (const uint8_t*)"tick3", 5, 100);
+  //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick3", 5, 100);
 }
 
 
