@@ -18,43 +18,18 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
 I2C_HandleTypeDef hi2c1;
-
-TIM_HandleTypeDef htim2;
-TIM_HandleTypeDef htim3;
-
+TIM_HandleTypeDef htim2;//0.1s
+TIM_HandleTypeDef htim3;//1s
 UART_HandleTypeDef huart2;
-uint32_t count0=0;
-/* USER CODE BEGIN PV */
+//uint32_t count0=0;
 
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 
@@ -63,20 +38,47 @@ void TIM2_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim2);
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
   if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
-          count0++;
-          if(count0>=2){
-            HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
+          //count0++;
+          //if(count0>=2){
+      HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
            // LCD_mode==LCD_mode_1;
-            count0=0;
+            //count0=0;
           }
-         }
-            
+         //}
+  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET) {
+          HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 3, 100); 
+        }
+  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET) {
+          HAL_UART_Transmit(&huart2, (const uint8_t*)"great", 6, 100);
+        }
+  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET) {
+          HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
+        }        
 }
 
 void TIM3_IRQHandler(void)
-{
-  HAL_TIM_IRQHandler(&htim3);
-  //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick3", 5, 100);
+{ static uint8_t hours = 0, minutes = 0, seconds = 0;
+  HAL_TIM_IRQHandler(&htim3);// timer 1s
+        system("clear"); 
+        seconds++;
+        if (seconds == 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes == 60) {
+                minutes = 0;
+                hours++;
+                if (hours == 24) {
+                    hours = 0;
+                }
+            }
+        }
+
+      char time_str[20];
+        snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d\n", hours, minutes, seconds);
+        HAL_UART_Transmit(&huart2, (uint8_t*)time_str, sizeof(time_str), 100);
+      printf("\n");
+
+
 }
 
 
@@ -167,27 +169,9 @@ static void MX_TIM3_Init(void)
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  //SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
   MX_GPIO_Init();
  
   MX_USART2_UART_Init();
@@ -410,28 +394,28 @@ static void MX_GPIO_Init(void)
   //HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Pin = GPIO_PIN_12;// up button
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_11;
+  GPIO_InitStruct.Pin = GPIO_PIN_11;//down button
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Pin = GPIO_PIN_10;//setting
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Pin = GPIO_PIN_9;//return 
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
