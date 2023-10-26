@@ -26,17 +26,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
-uint8_t LCD_mode;
-uint8_t LCD_mode_0;
-uint8_t LCD_mode_1;
-uint8_t LCD_mode_2;
 
 
-enum LCD_mode {
-     LCD_mode_0,//welcome screen
-     LCD_mode_1,//home screen
-     LCD_mode_2,//setting
-};
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +37,14 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include <stdbool.h>
+
+
+
+typedef enum {
+     LCD_mode_0,//welcome screen
+     LCD_mode_1,//home screen
+     LCD_mode_2,//setting
+} LCD_mode;
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

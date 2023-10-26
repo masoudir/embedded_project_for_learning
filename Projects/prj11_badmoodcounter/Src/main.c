@@ -4,12 +4,15 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include"retarget.h"
 I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim2;//0.1s
 TIM_HandleTypeDef htim3;//1s
 UART_HandleTypeDef huart2;
 uint32_t count0=0;
-uint32_t badmoodcount=0;
+int16_t badmoodcount=0;
+
+LCD_mode lcdmode = LCD_mode_0;
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -22,37 +25,44 @@ void TIM2_IRQHandler(void)
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
   count0++;
   if(count0<30){
-    LCD_mode=LCD_mode_0;
+    lcdmode=LCD_mode_0;
   }
 
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(LCD_mode==LCD_mode_0)){
-    LCD_mode=LCD_mode_1;
-    HAL_UART_Transmit(&huart2, (const uint8_t*) LCD_mode, 5, 100); 
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
+    lcdmode=LCD_mode_1;
+    //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100);
+    printf("lcdmode=%d\n", lcdmode);
+     
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
     badmoodcount--;
-    HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+    //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+    printf("badmood=%d\n", badmoodcount);
   }
   
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)){
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
-    HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+    //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+      printf("badmood=%d\n", badmoodcount);
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET)){
-    LCD_mode=LCD_mode_2;
-    HAL_UART_Transmit(&huart2, (const uint8_t*) LCD_mode, 5, 100); 
+    lcdmode=LCD_mode_2;
+    //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
+     printf("lcdmode=%d\n", lcdmode);
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET)){
-         if (LCD_mode==LCD_mode_2){
-             LCD_mode=LCD_mode_1;
+         if (lcdmode==LCD_mode_2){
+             lcdmode=LCD_mode_1;
          }
         
-         if (LCD_mode==LCD_mode_1){
-             LCD_mode=LCD_mode_0;
+         if (lcdmode==LCD_mode_1){
+             lcdmode=LCD_mode_0;
          }
+
+          printf("lcdmode=%d\n", lcdmode);
   }
 
 
@@ -193,9 +203,10 @@ int main(void)
   MX_GPIO_Init();
  
   MX_USART2_UART_Init();
+  RetargetInit(&huart2);
   MX_TIM2_Init();
   MX_TIM3_Init();
-
+  
   HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 2, 100);
   /* USER CODE BEGIN 2 */
 
