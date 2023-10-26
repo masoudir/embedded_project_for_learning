@@ -22,6 +22,22 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
+uint8_t LCD_mode;
+uint8_t LCD_mode_0;
+uint8_t LCD_mode_1;
+uint8_t LCD_mode_2;
+
+
+enum LCD_mode {
+     LCD_mode_0,//welcome screen
+     LCD_mode_1,//home screen
+     LCD_mode_2,//setting
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif

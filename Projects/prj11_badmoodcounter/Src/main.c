@@ -1,22 +1,4 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include <stdio.h>
 #include <time.h>
@@ -26,7 +8,8 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim2;//0.1s
 TIM_HandleTypeDef htim3;//1s
 UART_HandleTypeDef huart2;
-//uint32_t count0=0;
+uint32_t count0=0;
+uint32_t badmoodcount=0;
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -37,6 +20,51 @@ void TIM2_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim2);
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
+  count0++;
+  if(count0<30){
+    LCD_mode=LCD_mode_0;
+  }
+
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(LCD_mode==LCD_mode_0)){
+    LCD_mode=LCD_mode_1;
+    HAL_UART_Transmit(&huart2, (const uint8_t*) LCD_mode, 5, 100); 
+  }
+
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
+    badmoodcount--;
+    HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+  }
+  
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)){
+    badmoodcount++;
+    HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
+  }
+
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET)){
+    LCD_mode=LCD_mode_2;
+    HAL_UART_Transmit(&huart2, (const uint8_t*) LCD_mode, 5, 100); 
+  }
+
+  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET)){
+         if (LCD_mode==LCD_mode_2){
+             LCD_mode=LCD_mode_1;
+         }
+        
+         if (LCD_mode==LCD_mode_1){
+             LCD_mode=LCD_mode_0;
+         }
+  }
+
+
+
+
+
+
+
+
+
+
+  /*****************************below code is for button test***********************************/
   if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
           //count0++;
           //if(count0>=2){
@@ -82,16 +110,6 @@ void TIM3_IRQHandler(void)
 }
 
 
-// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-// {
-//   HAL_UART_Transmit(&huart2, (const uint8_t*)"tick", 4, 100);
-// }
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 static void MX_TIM3_Init(void)
 {
 
