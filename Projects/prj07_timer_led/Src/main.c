@@ -77,31 +77,34 @@ printf(" %ld time\n",timer1ms);
 //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
   
-      if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
-              captime0= timer1ms;
+    if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
+              captime0++;
+              printf(" %ld  captime0\n", captime0);
               HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,GPIO_PIN_SET);}
 
-     else if (HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_SET ){
-              captime1 = timer1ms;
-              m = captime1-captime0;
-            
-              HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,GPIO_PIN_RESET);
+     //else if (HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_SET ){
+             // captime1 = timer1ms;
+              //m = captime1-captime0;
+             //printf(" %ld  captime1\n", captime1);
+             // HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,GPIO_PIN_RESET);
              
          
             
-          if (m >3){
-                 HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET);
+          if ( captime0>3){
+                 HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET);}
                    
-                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin)){
+      if (HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_SET){
                  
                  HAL_GPIO_WritePin( GPIOA, GPIO_PIN_1,GPIO_PIN_RESET);
+                 captime0=0;
           } 
-            captime0=0;
-           captime1=0;
-           m=0;
+            
+           
+           //m=0;
+          
        }
       
-}  }
+ 
        
        
   
