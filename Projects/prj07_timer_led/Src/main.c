@@ -20,8 +20,10 @@
 #include "main.h"
 
 uint32_t timer1ms =0;
-uint32_t captime[2]={};
-bool is_clicked =0;
+uint32_t captime0=0;
+uint32_t captime1=0;
+uint32_t m=0;
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,7 +60,7 @@ UART_HandleTypeDef huart2;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_USART2_UART_Init(void);
+
 static void MX_TIM2_Init(void);
 
 bool array_[5] = {};
@@ -69,31 +71,41 @@ void my_function() {
     array_[i] = true;
   }
 }
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+         timer1ms++; 
+printf(" %ld time\n",timer1ms);
+//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+  
+      if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
+              captime0= timer1ms;
+              HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,GPIO_PIN_SET);}
 
-void TIM2_IRQHandler(void)
-{
-  HAL_TIM_IRQHandler(&htim2);
- HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_1);
- // HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
- /*  ++timer1ms;
-       
-       
-if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
-    captime[0]= timer1ms;
-
-       if (HAL_GPIO_ReadPin( B1_GPIO_Port, B1_Pin)== GPIO_PIN_SET ){
-        captime[1]= timer1ms;
-
-          if (captime[1]-captime[0] > 3){
+     else if (HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_SET ){
+              captime1 = timer1ms;
+              m = captime1-captime0;
+            
+              HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,GPIO_PIN_RESET);
+             
+         
+            
+          if (m >3){
                  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET);
                    
-                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin) == GPIO_PIN_SET){
+                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin)){
+                 
                  HAL_GPIO_WritePin( GPIOA, GPIO_PIN_1,GPIO_PIN_RESET);
-          }
+          } 
+            captime0=0;
+           captime1=0;
+           m=0;
        }
-    }
-  } */
-}
+      
+}  }
+       
+       
+  
+      
 
 /* USER CODE BEGIN PFP */
 
@@ -103,7 +115,20 @@ if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+void init_uart() {
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 /**
   * @brief  The application entry point.
   * @retval int
@@ -133,18 +158,22 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
-  MX_USART2_UART_Init();
+ 
   MX_TIM2_Init();
 
  // HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 2, 100);
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-
+ init_uart();
   my_function();
  HAL_TIM_Base_Start(&htim2) ;
         
-    
+    RetargetInit(&huart2);
+
+
+  printf("\r\n =============== \r\n Initiating tasks ... \r\n");
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -288,7 +317,7 @@ static void MX_TIM2_Init(void)
                      = 8,000
                      = 0x1F40
     */
-    htim2.Init.Period = 16;
+    htim2.Init.Period = 16000;
         
     /*
         Finally initialize Timer-2
@@ -314,33 +343,13 @@ static void MX_TIM2_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USART2_UART_Init(void)
-{
+ 
 
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
 
-}
+
 
 /**
   * @brief GPIO Initialization Function
@@ -369,7 +378,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode =  GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull =GPIO_PULLUP;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
