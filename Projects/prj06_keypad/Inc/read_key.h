@@ -30,7 +30,9 @@ extern "C" {
 #include "stm32f4xx_hal.h"
 #include "retarget.h"
 
-
+ void read_keypad();
+ int read_col();
+ void set_row(uint8_t i);
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 

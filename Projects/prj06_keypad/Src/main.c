@@ -180,7 +180,7 @@ void Setup() {
     GPIO_InitTypeDef gpio_config = {
       .Pin = col[0]|col[1]| col[2],
       .Mode = GPIO_MODE_INPUT,
-      .Pull = GPIO_NOPULL,
+      .Pull =GPIO_NOPULL ,
       .Speed = GPIO_SPEED_FREQ_LOW,
       .Alternate = 0
     };
@@ -192,7 +192,7 @@ void Setup() {
     GPIO_InitTypeDef gpio_config = {
           .Pin =    row[0]| row[1]| row[2] | row[3], 
           .Mode = GPIO_MODE_OUTPUT_PP,
-          .Pull = GPIO_NOPULL,
+          .Pull = GPIO_NOPULL  ,
           .Speed = GPIO_SPEED_FREQ_LOW,
           .Alternate = 0
     };
@@ -228,8 +228,7 @@ int main(void)
   {
     //StartTask02();
 
-HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
-HAL_Delay(500);
+
    read_keypad();
 }
 }

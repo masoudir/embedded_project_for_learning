@@ -19,14 +19,15 @@
 /* USER CODE END Header */
 /* Includes -------------------------------------------------------------*/
  #include "read_key.h"
-extern char row[4]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9};
-extern char col[3]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8};
+ extern UART_HandleTypeDef huart2;
+extern char row[4];
+extern char col[3];
 
 char lookup_table[4][3]={
 {'1' , '2' , '3'},
 {'4' , '5' , '6'},
 {'7' , '8' , '9'},
-{'*' , '5' , '#'},
+{'*' , '0' , '#'},
 
 };
 
@@ -40,39 +41,44 @@ char lookup_table[4][3]={
          else{
 
             HAL_GPIO_WritePin(GPIOA, row[i], RESET);
-             }
+             } //printf(" %d ist i",i);
                            }
                          }
 
   int read_col(){
-  
-   if (HAL_GPIO_ReadPin( GPIOC,col[0]) ==1 && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
+    if ((HAL_GPIO_ReadPin( GPIOC,col[0]) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,col[1]) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,col[2]) ==GPIO_PIN_RESET) ){ 
+       return 0;}
+   else if ((HAL_GPIO_ReadPin( GPIOC,col[0]) ==GPIO_PIN_SET) && (HAL_GPIO_ReadPin(GPIOC,col[1]) ==GPIO_PIN_RESET)  &&( HAL_GPIO_ReadPin(GPIOC,col[2]) ==GPIO_PIN_RESET) ){ 
        return 1;}
-   if (HAL_GPIO_ReadPin( GPIOC,col[0]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[1]) ==1 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==0){
+   else if ((HAL_GPIO_ReadPin( GPIOC,col[0]) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,col[1]) ==GPIO_PIN_SET) && (HAL_GPIO_ReadPin(GPIOC,col[2]) ==GPIO_PIN_RESET )){
        return 2;}
-   if (HAL_GPIO_ReadPin( GPIOC,col[0]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[1]) ==0 && HAL_GPIO_ReadPin(GPIOC,col[2]) ==1){
+   else if ((HAL_GPIO_ReadPin( GPIOC,col[0]) ==GPIO_PIN_RESET)  && (HAL_GPIO_ReadPin(GPIOC,col[1]) ==GPIO_PIN_RESET)  && (HAL_GPIO_ReadPin(GPIOC,col[2]) ==GPIO_PIN_SET)){
        return 3;}
-        else{
-         return 0;}
+       
                 }
 
 
 
  
  void read_keypad(){
-       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5,SET);
+       //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5,SET);
         int column=0;
         int i;
         char button;
        
            for (i=0; i<4 ;i++)
                 {
+                     
                    set_row(i);
                    column = read_col();
+                  //printf(" %d COLUMN\n ",column);
+                   // HAL_UART_Transmit(&huart2, (const uint8_t*)"hey1", 3, 100);
+                          // HAL_Delay(500);
                      if(column > 0 ){
+                        
                          button = lookup_table[i][column-1];
                           printf(" %c pressed ",button);
-                       
+                           HAL_Delay(10);
                                      }
                 }
 
