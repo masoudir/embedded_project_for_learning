@@ -75,16 +75,16 @@ void TIM2_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim2);
   HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
   ++timer1ms;
-   if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)){
+   if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==HAL_GPIO_RESET){
     captime[0]= timer1ms;
 
-       if (HAL_GPIO_ReadPin( B1_GPIO_Port, B1_Pin) == 0){
+       if (HAL_GPIO_ReadPin( B1_GPIO_Port, B1_Pin) ==HAL_GPIO_SET ){
         captime[1]= timer1ms;
 
-          if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin)){
+          if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin)==HAL_GPIO_RESET){
                  captime[2]= timer1ms;
                    
-                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin== 0)){
+                if (HAL_GPIO_ReadPin( B1_GPIO_Port ,B1_Pin== HAL_GPIO_SET)){
                  captime[3]= timer1ms;
           }
        }
@@ -93,16 +93,20 @@ void TIM2_IRQHandler(void)
       if (captime[1]- captime[0] > 40){
         is_clicked =1;
 
-        if ((captime[3]- captime[2] > 40) && (is_clicked =1)){
+       if ((captime[3]- captime[2] > 40) && (is_clicked =1)){
           if (captime[2]- captime[1] >20 ){
                  is_doubleclicked =1;}
            else{
            is_doubleclicked = 0; }
              
       }
-      
+      if(is_clicked){
+     printf(is_clicked );
+     else if(is_doubleclicked){
+     printf(is_doubleclicked );
   }
 }
+      }
 
 /* USER CODE BEGIN PFP */
 
