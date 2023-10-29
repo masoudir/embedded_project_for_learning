@@ -39,7 +39,7 @@ cd ..
 
 elif [ $1 == 'flash' ]
 then
-sudo openocd -f openocd.cfg -c "program build/stm32f4446re_test.elf verify reset exit"
+sudo openocd -f openocd.cfg -c "program build/stm32c031c6_test.elf verify reset exit"
 
 fi
 
