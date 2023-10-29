@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-uint32_t timer1ms =0;
+uint32_t timer =0;
 uint32_t captime0=0;
 
 
@@ -70,27 +70,13 @@ void my_function() {
   }
 }
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-         timer1ms++; 
-printf(" %ld time\n",timer1ms);
-//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
-  
-    if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
-              captime0++;
-              printf(" %ld  captime0\n", captime0);
-             }
-         
-            
-       if ( captime0>3){
-                 HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,GPIO_PIN_SET);}
-                   
-   if (HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_SET){
-                 
-           HAL_GPIO_WritePin( GPIOA, GPIO_PIN_1,GPIO_PIN_RESET);
-                 captime0=0;
-          }
+         timer++; 
+if(HAL_GPIO_ReadPin( B1_GPIO_Port , B1_Pin)==GPIO_PIN_RESET){
+  HAL_GPIO_WritePin( GPIOA, GPIO_PIN_1, GPIO_PIN_SET);}
+}
           
-       }
+          
+       
       
  
        
@@ -364,7 +350,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1 , GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_13|
+GPIO_PIN_15 , GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -387,7 +374,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
-GPIO_InitStruct.Pin = GPIO_PIN_1;
+GPIO_InitStruct.Pin = GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_13|
+GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
