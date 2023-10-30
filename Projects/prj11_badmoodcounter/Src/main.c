@@ -11,6 +11,22 @@ TIM_HandleTypeDef htim3;//1s
 UART_HandleTypeDef huart2;
 uint32_t count0=0;
 int16_t badmoodcount=0;
+int mytime=0;
+void welcome_screen(void){
+  printf("welcome message\r\n");
+  
+}
+
+
+void home_screen(void){
+  printf("time, current count, weekly record\r\n");
+  
+};
+
+void setting_screen(void){
+  printf("setting manu\r\n");
+  
+};
 
 int array[7]={0};
 
@@ -33,26 +49,26 @@ void TIM2_IRQHandler(void)
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
     lcdmode=LCD_mode_1;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100);
-    printf("lcdmode=%d\n", lcdmode);
+    //printf("lcdmode=%d\n", lcdmode);
      
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
     badmoodcount--;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    printf("badmood=%d\n", badmoodcount);
+    //printf("badmood=%d\n", badmoodcount);
   }
   
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-      printf("badmood=%d\n", badmoodcount);
+    //printf("badmood=%d\n", badmoodcount);
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET)){
     lcdmode=LCD_mode_2;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
-     printf("lcdmode=%d\n", lcdmode);
+    //printf("lcdmode=%d\n", lcdmode);
   }
 
   if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET)){
@@ -64,7 +80,7 @@ void TIM2_IRQHandler(void)
              lcdmode=LCD_mode_0;
          }
 
-          printf("lcdmode=%d\n", lcdmode);
+          //printf("lcdmode=%d\n", lcdmode);
   }
 
 
@@ -77,30 +93,30 @@ void TIM2_IRQHandler(void)
 
 
   /*****************************below code is for button test***********************************/
-  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
-          //count0++;
-          //if(count0>=2){
-      HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
-           // LCD_mode==LCD_mode_1;
-            //count0=0;
-          }
-         //}
-  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET) {
-          HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 3, 100); 
-        }
-  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET) {
-          HAL_UART_Transmit(&huart2, (const uint8_t*)"great", 6, 100);
-        }
-  if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET) {
-          HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
-        }        
+  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
+  //         //count0++;
+  //         //if(count0>=2){
+  //     HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
+  //          // LCD_mode==LCD_mode_1;
+  //           //count0=0;
+  //         }
+  //        //}
+  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET) {
+  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 3, 100); 
+  //       }
+  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET) {
+  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"great", 6, 100);
+  //       }
+  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET) {
+  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
+  //       }        
 }
 
 void TIM3_IRQHandler(void)
 { static uint8_t hours = 0, minutes = 0, seconds = 0;
-  int time=0;
+ 
   HAL_TIM_IRQHandler(&htim3);// timer 1s
-        system("clear"); 
+      //  system("clear"); 
         seconds++;
         if (seconds == 60) {
             seconds = 0;
@@ -114,24 +130,26 @@ void TIM3_IRQHandler(void)
             }
         }
 
-      char time_str[20];
-        snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d\n", hours, minutes, seconds);
-        HAL_UART_Transmit(&huart2, (uint8_t*)time_str, sizeof(time_str), 100);
-      printf("\n");
-  time++;
+      
+        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
+        
+  mytime++;
   array[0]=badmoodcount;
-  if(time==10){ 
-          for (int j = 5; j >= 0; j--) {
-            array[j+1] = array[j];};           
-          time=0;
+  if(mytime==10){ 
+      for (int j = 5; j >= 0; j--) {
+        array[j+1] = array[j];
+      }; 
+      badmoodcount=0;
+      array[0]=0;
+      mytime=0;
   }
   // Display the latest 7 interval numbers
         printf("Latest 7 numbers: ");
         for (int j = 0; j < 7; j++) {
             printf("%d ", array[j]);
         }
-        printf("\n");
-    
+        printf("\r\n");
+      printf("----------------------------\r\n");
 }
 
 
@@ -222,7 +240,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   
-  HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 2, 100);
+  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 2, 100);
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -234,7 +252,19 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+      if(lcdmode==LCD_mode_0){
+      
+       welcome_screen();
+      }
+      if(lcdmode==LCD_mode_1){
+    
+       home_screen();
+      }
+      if(lcdmode==LCD_mode_2){
+ 
+       setting_screen();
+      }
+    HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
