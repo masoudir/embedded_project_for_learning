@@ -12,6 +12,8 @@ UART_HandleTypeDef huart2;
 uint32_t count0=0;
 int16_t badmoodcount=0;
 
+int array[7]={0};
+
 LCD_mode lcdmode = LCD_mode_0;
 
 void SystemClock_Config(void);
@@ -96,6 +98,7 @@ void TIM2_IRQHandler(void)
 
 void TIM3_IRQHandler(void)
 { static uint8_t hours = 0, minutes = 0, seconds = 0;
+  int time=0;
   HAL_TIM_IRQHandler(&htim3);// timer 1s
         system("clear"); 
         seconds++;
@@ -115,8 +118,20 @@ void TIM3_IRQHandler(void)
         snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d\n", hours, minutes, seconds);
         HAL_UART_Transmit(&huart2, (uint8_t*)time_str, sizeof(time_str), 100);
       printf("\n");
-
-
+  time++;
+  array[0]=badmoodcount;
+  if(time==10){ 
+          for (int j = 5; j >= 0; j--) {
+            array[j+1] = array[j];};           
+          time=0;
+  }
+  // Display the latest 7 interval numbers
+        printf("Latest 7 numbers: ");
+        for (int j = 0; j < 7; j++) {
+            printf("%d ", array[j]);
+        }
+        printf("\n");
+    
 }
 
 
