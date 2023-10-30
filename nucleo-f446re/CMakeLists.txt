@@ -68,7 +68,7 @@ endmacro()
 
 set(includeDirlist "")
 set(ProjectSourceFolderPath ${CMAKE_SOURCE_DIR})
-set(MCU "stm32f4446re")
+set(MCU "stm32f446re")
 set(target ${MCU}_test)
 set(OUTPUT_NAME ${target})
 set(MY_OUT_DIR build)
