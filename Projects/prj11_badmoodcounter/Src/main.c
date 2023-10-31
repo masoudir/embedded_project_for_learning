@@ -19,7 +19,7 @@ void welcome_screen(void){
 
 
 void home_screen(void){
-  printf("time, current count, weekly record\r\n");
+  printf("home screen\r\n");
   
 };
 
