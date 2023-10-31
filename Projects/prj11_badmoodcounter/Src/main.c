@@ -71,7 +71,7 @@ void TIM2_IRQHandler(void)
     //printf("lcdmode=%d\n", lcdmode);
   }
 
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET)){
+  if((HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET)){
          if (lcdmode==LCD_mode_2){
              lcdmode=LCD_mode_1;
          }
@@ -107,7 +107,7 @@ void TIM2_IRQHandler(void)
   // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET) {
   //         HAL_UART_Transmit(&huart2, (const uint8_t*)"great", 6, 100);
   //       }
-  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9) == GPIO_PIN_RESET) {
+  // if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET) {
   //         HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
   //       }        
 }
@@ -489,11 +489,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_9;//return 
+  GPIO_InitStruct.Pin = GPIO_PIN_7;//return 
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 
 
