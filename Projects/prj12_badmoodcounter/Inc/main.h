@@ -36,7 +36,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include"stm32f4xx_hal_spi.h"
 #include <stdbool.h>
 
 
@@ -89,21 +88,6 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
-
-#define DC_Pin GPIO_PIN_8
-#define DC_GPIO_Port GPIOA
-#define RST_Pin GPIO_PIN_9
-#define RST_GPIO_Port GPIOA
-#define CS_Pin GPIO_PIN_7
-#define CS_GPIO_Port GPIOB
-
-#define SPI2_MOSI_PORT GPIOC
-#define SPI2_MISO_PORT GPIOC
-#define SPI2_CLK_PORT GPIOB
-#define SPI2_MOSI_PIN GPIO_PIN_1
-#define SPI2_MISO_PIN GPIO_PIN_2
-#define SPI2_CLK_PIN GPIO_PIN_10
-
 
 /* USER CODE BEGIN Private defines */
 
