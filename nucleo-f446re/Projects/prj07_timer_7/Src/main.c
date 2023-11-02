@@ -18,12 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-uint32_t timer1=0;
-uint32_t timer2=0;
-uint32_t time=0;
-uint32_t stoptime=0;
-int i=0;
-int j=0;
+#include <stdio.h>
+uint32_t timer1;
+uint32_t timer2;
+uint32_t time;
+uint32_t stoptime;
+int i;
+int j;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -65,30 +66,27 @@ void display_digit(uint8_t timer);
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
- time++;
-printf("%ld" ,time);
+}
+/* 
 if (HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
-
-   timer1=time;
- 
+  time++;
+  
+   printf("%ld time\n" ,time);
+}
+  if(time==6){
+    j++;
   }
-  else if(HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_SET){
-    timer2=time;
-   stoptime = timer2 -timer1;
-  }
-   
-   if (stoptime >= 3){
+} */
+  /*if (time >= 3){
   
     for (j=0; j<=9 ;j++){
-        j=i;
+         printf("%d j\n" ,j);
         display_digit(j);
-  }
-  stoptime=0;
-    }
-} 
-
+  } time=0;
+   
  
-  
+    }  */
+
 void display_digit(uint8_t timer){
   if ( timer==0){
      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
@@ -170,7 +168,7 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
-  RetargetInit(&huart2);
+   RetargetInit(&huart2);
   MX_TIM2_Init();
 
  
@@ -183,17 +181,30 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-  if (HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
+   /* if (HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
+     printf("%ld time\n" ,time);
     display_digit(i);
-     i++;
+    i++;
+    HAL_Delay(1000);}
+
+    if(time==6){
+      j=i;
+     display_digit(j);
+     time=0;
+     }
      if(i>=10){
           i=0;
-     }
+     } */
+      if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
+    
+    HAL_GPIO_WritePin(LD2_GPIO_Port,LD2_Pin,GPIO_PIN_SET);
+    }
+ }
   }
-  
-}
+   
 
-}
+
+
   
    
   
@@ -316,7 +327,7 @@ static void MX_TIM2_Init(void)
         Divide the timer-2 input frequency (16Mhz)
         by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
     */
-    htim2.Init.Prescaler   = 16000;
+    htim2.Init.Prescaler   = 2000;
     
     #if (UP_COUNTER)
      /* Up-Counter mode*/
@@ -414,19 +425,19 @@ static void MX_GPIO_Init(void)
 
 
 
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING ;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
+  
   
 
   /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
+  GPIO_InitStruct.Pin =GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
+GPIO_InitStruct.Pin =GPIO_PIN_0;
+  GPIO_InitStruct.Mode =GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -444,17 +455,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+ 
+   
 
-  /* EXTI interrupt init*/
+/* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
 
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+  
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
-}
+
 
 /* USER CODE BEGIN 4 */
 
@@ -494,6 +507,15 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 
 
+
+ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+
+  if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_RESET){
+
+    HAL_GPIO_WritePin(LD2_GPIO_Port,LD2_Pin,GPIO_PIN_RESET);
+    }
+ }
+  
 
  
 
