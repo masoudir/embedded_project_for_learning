@@ -5,15 +5,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include"retarget.h"
-I2C_HandleTypeDef hi2c1;
-TIM_HandleTypeDef htim2;//0.1s
-TIM_HandleTypeDef htim3;//1s
-//SPI_HandleTypeDef hspi2;
+//I2C_HandleTypeDef hi2c1;
+
+SPI_HandleTypeDef hspi2;
 UART_HandleTypeDef huart2;
 
 uint32_t count0=0;
 int16_t badmoodcount=0;
 int mytime=0;
+int array[7]={0};
+LCD_mode lcdmode = LCD_mode_0;
+
+
+
 void welcome_screen(void){
   printf("welcome message\r\n");
   
@@ -30,60 +34,14 @@ void setting_screen(void){
   
 };
 
-int array[7]={0};
 
-LCD_mode lcdmode = LCD_mode_0;
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
+void LCD_init(void);
 
-void TIM2_IRQHandler(void)
-{
-  HAL_TIM_IRQHandler(&htim2);
-  //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
-  count0++;
-  if(count0<30){
-    lcdmode=LCD_mode_0;
-  }
-
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
-    lcdmode=LCD_mode_1;
-    //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100);
-    //printf("lcdmode=%d\n", lcdmode);
-     
-  }
-
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
-    badmoodcount--;
-    //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    //printf("badmood=%d\n", badmoodcount);
-  }
-  
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
-    badmoodcount++;
-    //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    //printf("badmood=%d\n", badmoodcount);
-  }
-
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET)){
-    lcdmode=LCD_mode_2;
-    //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
-    //printf("lcdmode=%d\n", lcdmode);
-  }
-
-  if((HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET)){
-         if (lcdmode==LCD_mode_2){
-             lcdmode=LCD_mode_1;
-         }
-        
-         if (lcdmode==LCD_mode_1){
-             lcdmode=LCD_mode_0;
-         }
-
-          //printf("lcdmode=%d\n", lcdmode);
-  }
 
 
 
@@ -114,143 +72,44 @@ void TIM2_IRQHandler(void)
   //       }        
 }
 
-void TIM3_IRQHandler(void)
-{ static uint8_t hours = 0, minutes = 0, seconds = 0;
- 
-  HAL_TIM_IRQHandler(&htim3);// timer 1s
-      //  system("clear"); 
-        seconds++;
-        if (seconds == 60) {
-            seconds = 0;
-            minutes++;
-            if (minutes == 60) {
-                minutes = 0;
-                hours++;
-                if (hours == 24) {
-                    hours = 0;
-                }
-            }
-        }
 
-      
-        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
-        
-  mytime++;
-  array[0]=badmoodcount;
-  if(mytime==10){ 
-      for (int j = 5; j >= 0; j--) {
-        array[j+1] = array[j];
-      }; 
-      badmoodcount=0;
-      array[0]=0;
-      mytime=0;
-  }
-  // Display the latest 7 interval numbers
-        printf("Latest 7 numbers: ");
-        for (int j = 0; j < 7; j++) {
-            printf("%d ", array[j]);
-        }
-        printf("\r\n");
-      printf("----------------------------\r\n");
+
+
+void LCD_init(){
+   
+hspi2 = (SPI_HandleTypeDef) {
+    .Instance = SPI2,
+    .Init = {
+      .Mode = SPI_MODE_MASTER,
+      .Direction = SPI_DIRECTION_2LINES,
+      .DataSize = SPI_DATASIZE_8BIT,
+      .CLKPolarity = SPI_POLARITY_LOW,
+      .CLKPhase = SPI_PHASE_1EDGE,
+      .NSS = SPI_NSS_SOFT,
+      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4,
+      .FirstBit = SPI_FIRSTBIT_MSB,
+      .TIMode = SPI_TIMODE_DISABLE,
+      .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
+      .CRCPolynomial = 10
+    }
+};
+       
 }
 
 
-static void MX_TIM3_Init(void)
-{
 
-  /* 
-        Enable clock to Timer-2 
-        
-        NOTE: This is lagacy Macro. The better approach is the
-        use of HAL_TIM_ConfigClockSource function.
-    */
-    __HAL_RCC_TIM3_CLK_ENABLE();
-    
-    /*
-        From STM32F407 datasheet, Timer2 is clocked from
-        APB1 bus (42Mhz max). In default configuration
-        Timer-2 is receiving 16Mhz (HSI) bus clock.
-    */        
-    
-    /***************************************************
-                   Timer-2 Configuration:
-    ****************************************************/
-    
-    /* Select Timer-2 for further configuration */
-    htim3.Instance = TIM3;
-    
-    /*
-        Divide the timer-2 input frequency (16Mhz)
-        by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
-    */
-    htim3.Init.Prescaler   = 1000;
-    
-    #if (UP_COUNTER)
-     /* Up-Counter mode*/
-     htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-    #else 
-      htim3.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
-    #endif
-
-    /*
-        We want the time count to be 500msec (half a second).
-        As the input frequency is 16khz so the total
-        counts required for 500msec delay:
-        new 0.1s
-        
-        total counts = 1000msec * f
-                     = (1sec) * 16,000
-                     = 16000
-                     
-    */
-    htim3.Init.Period = 16000;
-        
-    /*
-        Finally initialize Timer-3
-    */
-    while (HAL_TIM_Base_Init(&htim3)!= HAL_OK);
-
-    /*
-        Enable timer-2 IRQ interrupt
-    */
-    HAL_TIM_Base_Start_IT(&htim3);
-
-    /* Enable interrupt at IRQ-Level */
-    HAL_NVIC_EnableIRQ(TIM3_IRQn);
-    
-    /*
-        Start the timer
-    */
-    HAL_TIM_Base_Start(&htim3);
-}
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 int main(void)
 {
 
   HAL_Init();
-
   MX_GPIO_Init();
- 
   MX_USART2_UART_Init();
   RetargetInit(&huart2);
   MX_TIM2_Init();
   MX_TIM3_Init();
+
   
-  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 2, 100);
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
  
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
@@ -270,6 +129,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+
 }
 
 /**
@@ -320,303 +180,15 @@ void SystemClock_Config(void)
 }
 
 
-/**
-  * @brief TIM3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
 
-  /* 
-        Enable clock to Timer-2 
-        
-        NOTE: This is lagacy Macro. The better approach is the
-        use of HAL_TIM_ConfigClockSource function.
-    */
-    __HAL_RCC_TIM2_CLK_ENABLE();
-    
-    /*
-        From STM32F407 datasheet, Timer2 is clocked from
-        APB1 bus (42Mhz max). In default configuration
-        Timer-2 is receiving 16Mhz (HSI) bus clock.
-    */        
-    
-    /***************************************************
-                   Timer-2 Configuration:
-    ****************************************************/
-    
-    /* Select Timer-2 for further configuration */
-    htim2.Instance = TIM2;
-    
-    /*
-        Divide the timer-2 input frequency (16Mhz)
-        by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
-    */
-    htim2.Init.Prescaler   = 1000;
-    
-    #if (UP_COUNTER)
-     /* Up-Counter mode*/
-     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-    #else 
-      htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
-    #endif
 
-    /*
-        We want the time count to be 500msec (half a second).
-        As the input frequency is 16khz so the total
-        counts required for 500msec delay:
-        new 0.1s
-        
-        total counts = 100msec * f
-                     = (.1sec) * 16,000
-                     = 1600
-                     = 0x1F40
-    */
-    htim2.Init.Period = 1600;
-        
-    /*
-        Finally initialize Timer-2
-    */
-    while (HAL_TIM_Base_Init(&htim2)!= HAL_OK);
-
-    /*
-        Enable timer-2 IRQ interrupt
-    */
-    HAL_TIM_Base_Start_IT(&htim2);
-
-    /* Enable interrupt at IRQ-Level */
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
-    
-    /*
-        Start the timer
-    */
-    HAL_TIM_Base_Start(&htim2);
-}
-
-/**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
-}
 /**
   * @brief SPI Initialization 
   * @param None
   * @retval None
   */
 
-hspi2 = (SPI_HandleTypeDef) {
-    .Instance = SPI2,
-    .Init = {
-      .Mode = SPI_MODE_MASTER,
-      .Direction = SPI_DIRECTION_2LINES,
-      .DataSize = SPI_DATASIZE_8BIT,
-      .CLKPolarity = SPI_POLARITY_LOW,
-      .CLKPhase = SPI_PHASE_1EDGE,
-      .NSS = SPI_NSS_SOFT,
-      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4,
-      .FirstBit = SPI_FIRSTBIT_MSB,
-      .TIMode = SPI_TIMODE_DISABLE,
-      .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
-      .CRCPolynomial = 10
-    }
-  };
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
-
-  // /*Configure GPIO pin : PB12 */
-  // GPIO_InitStruct.Pin = GPIO_PIN_12;
-  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  // GPIO_InitStruct.Pull = GPIO_NOPULL;
-  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  //HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-
-  GPIO_InitStruct.Pin = GPIO_PIN_12;// up button
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-
-  GPIO_InitStruct.Pin = GPIO_PIN_11;//down button
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-
-  GPIO_InitStruct.Pin = GPIO_PIN_10;//setting
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-
-  GPIO_InitStruct.Pin = GPIO_PIN_7;//return 
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-    // Init GPIO
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = GPIO_PIN_5,
-      .Mode = GPIO_MODE_OUTPUT_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_LOW,
-      .Alternate = 0
-    };
-
-    HAL_GPIO_Init(GPIOA, &gpio_config);
-  }
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-          .Pin = GPIO_PIN_13,
-          .Mode = GPIO_MODE_INPUT,
-          .Pull = GPIO_NOPULL,
-          .Speed = GPIO_SPEED_FREQ_LOW,
-          .Alternate = 0
-    };
-
-    HAL_GPIO_Init(GPIOC, &gpio_config);
-  }
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = DC_Pin|RST_Pin,
-      .Mode = GPIO_MODE_OUTPUT_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_LOW,
-      .Alternate = 0
-    };
-
-    HAL_GPIO_Init(GPIOA, &gpio_config);
-  }
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = CS_Pin,
-      .Mode = GPIO_MODE_OUTPUT_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_LOW,
-      .Alternate = 0
-    };
-
-    HAL_GPIO_Init(CS_GPIO_Port, &gpio_config);
-  }
-
-
-    /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, DC_Pin|RST_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_MOSI_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF7_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_MOSI_PORT, &gpio_config);
-  }
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_MISO_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF5_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_MISO_PORT, &gpio_config);
-  }  
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_CLK_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF5_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_CLK_PORT, &gpio_config);
-  }    
-
-
-
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
-}
 
 /* USER CODE BEGIN 4 */
 
