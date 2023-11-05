@@ -20,6 +20,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+
+#define BUTTON_STATE_FOR_CLICK1 0
+#define BUTTON_STATE_FOR_CLICK2 2
+
 extern int i;
 extern uint32_t counter;
 extern int n;
@@ -231,25 +235,31 @@ void increase_digit() {
   printf("%ld = count\n\r", counter);
 }
 
+void decrease_digit() {
+  if( counter == 0) {
+    counter = 9;
+  } else {
+    --counter;
+  }
+
+  display_digit(counter-1);
+  printf("%ld = count\n\r", counter);
+}
+
 void TIM2_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim2);
   ++timer_count;
 
-  if(button_state == 1 && (timer_count > 30)) {
+  if(button_state == 1 && HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_RESET) {
     button_state = 2;
-  }
-  
-  if (button_state == 2) {
-    if(timer_count % 10 == 0) {
-      increase_digit();
-    }
-    
-  }
-
-  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_RESET) {
+  } 
+  else if (button_state == 3 && HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_RESET) {
+    button_state = 4;
+    decrease_digit();
     button_state = 0;
   }
+
  // HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
 //  if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
 //  i++;
@@ -289,11 +299,13 @@ void EXTI0_IRQHandler(void)
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
   
-  if(button_state == 0) {
+  if(button_state == BUTTON_STATE_FOR_CLICK1) {
     timer_count = 0;
     // event_timer_count[0] = timer_count;
     button_state = 1;
-    increase_digit();
+  } else if(button_state == BUTTON_STATE_FOR_CLICK2) {
+    ++button_state;
+
   }
   /* USER CODE BEGIN EXTI0_IRQn 1 */
 
