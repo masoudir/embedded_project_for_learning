@@ -22,8 +22,9 @@
 #include "stm32f4xx_it.h"
 extern int i;
 extern uint32_t counter;
-
-
+extern int n;
+extern int j;
+extern int k;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -222,7 +223,31 @@ void TIM2_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htim2);
  // HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+ if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
+ i++;
+      printf("%d = i\n\r",i);
+  k=0;    
+ 
+   if (i>=3 && k==0){   
+      
+     counter++;
+          k=1;
+            display_digit(counter-1);
+    printf("%ld = count\n\r",counter);}
+      if (counter >= 10) {
+         counter = 0;
+      }
+
+  } 
+ else {
+  
+      k=0;
+      i=0;
+    } 
 }
+
+ 
+
 
 /* USER CODE BEGIN 1 */
 
@@ -237,12 +262,17 @@ void EXTI0_IRQHandler(void)
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
 
-if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
-           i=1;
+ if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
+     
              counter++;
-    display_digit(counter);
-       printf("hi");   
+    display_digit(counter-1);
+    printf("%ld = count\n\r",counter);
+    }
+
+      if (counter >= 10) {
+         counter = 0;
+      }
 }
 
 
-}
+

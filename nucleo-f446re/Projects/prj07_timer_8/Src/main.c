@@ -19,13 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdio.h>
-uint32_t timer;
-uint32_t counter;
+uint32_t timer=0;
+uint32_t counter=0;
 uint32_t num;
 int m;
 int i;
 int j;
-int t;
+int n;
+int k;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -63,25 +64,8 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
-void display_digit(uint8_t timer);
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
-  m++;
-  if(m > 3){
-    t=1;
 
-    timer++;
-  }
-} */
-}
-
- void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-
- 
-   
-    }
  
   
 
@@ -179,32 +163,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-   /* for (j=0;j<10 ;j++){
+   
 
-      if(t==1){
-
-        display_digit(j);
-      timer=0;
-    }
-   else if(i==1){
-         display_digit(j);
-         counter=0;
-   }
-   i=0;
-   t=0;
-    }
- } */
 }
-}  
-
-
-
   
-   
-  
-   
-   
-  
+}
+
 
 
 /**
