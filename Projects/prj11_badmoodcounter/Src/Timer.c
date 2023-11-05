@@ -5,6 +5,13 @@ TIM_HandleTypeDef htim2;//0.1s
 TIM_HandleTypeDef htim3;//1s
 
 
+extern uint32_t count0;
+extern int16_t badmoodcount;
+extern int mytime;
+extern int array[7];
+extern LCD_mode lcdmode;
+
+
 void MX_TIM2_Init(void)
 {
 

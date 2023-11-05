@@ -34,9 +34,9 @@ void setting_screen(void){
 };
 
 void SystemClock_Config(void);
-void MX_GPIO_Init(void);
-void MX_USART2_UART_Init(void);
-void MX_TIM2_Init(void);
+extern void MX_GPIO_Init(void);
+extern void MX_USART2_UART_Init(void);
+extern void MX_TIM2_Init(void);
 void LCD_init(void);
 
 

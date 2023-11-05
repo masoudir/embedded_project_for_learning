@@ -1,7 +1,7 @@
 
 #include "UART.h"
 
-static void MX_USART2_UART_Init(void)
+void MX_USART2_UART_Init(void)
 {
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
