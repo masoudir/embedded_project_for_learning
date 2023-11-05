@@ -10,5 +10,5 @@ void MX_TIM3_Init(void)
 void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 
-#endif /* __GPIO_H */
+#endif /* __TIMER__H */
 

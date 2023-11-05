@@ -5,21 +5,21 @@
 #include "stm32f4xx_hal.h"
 
 
-/********************for led and push button pins**************************************/
+/********************for led and push button pins*************************************/
 #define LED_PIN GPIO_PIN_5
-#define LED_PIN_GPIO_Port GPIOA
+#define LED_GPIO_Port GPIOA
 
-#define PUSH_BUTTON_Pin GPIO_PIN_13
+#define PUSH_BUTTON_PIN GPIO_PIN_13
 #define PUSH_BUTTON_GPIO_Port GPIOC
 
-/********************for LCD related pins**********************************************/
-#define DC_Pin GPIO_PIN_8
+/********************for LCD related pins*********************************************/
+#define DC_PIN GPIO_PIN_8
 #define DC_GPIO_Port GPIOA
 
-#define RST_Pin GPIO_PIN_9
+#define RST_PIN GPIO_PIN_9
 #define RST_GPIO_Port GPIOA
 
-#define CS_Pin GPIO_PIN_6
+#define CS_PIN GPIO_PIN_6
 #define CS_GPIO_Port GPIOB
 
 #define SPI2_MOSI_PIN GPIO_PIN_1
@@ -46,10 +46,19 @@
 #define RETURN_BUTTON_PORT GPIOC
 
 /*
-
-Pin     Description     Type
-PA5     LED             output
-
+Pin     Description         Type
+PA5     LED PIN             output
+PC13    PUSH BUTTION PIN    input 
+PA8     DC PIN(data/command)output
+PA9     RST                 output
+PB6     CS                  output
+PC1     MOSI                output
+PC2     MISO                input
+PB10    CLK                 output  
+PA12    up button           input
+PA11    down button         input
+PA10    setting button      input
+PC7     return button       input
 */
 
 

@@ -16,13 +16,9 @@ int mytime=0;
 int array[7]={0};
 LCD_mode lcdmode = LCD_mode_0;
 
-
-
 void welcome_screen(void){
   printf("welcome message\r\n");
-  
 }
-
 
 void home_screen(void){
   printf("home screen\r\n");
@@ -34,22 +30,11 @@ void setting_screen(void){
   
 };
 
-
-
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 void LCD_init(void);
-
-
-
-
-
-
-
-
-
 
 
   /*****************************below code is for button test***********************************/
@@ -108,8 +93,6 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
 
-  
- 
   while (1)
   {
     /* USER CODE END WHILE */
@@ -179,17 +162,11 @@ void SystemClock_Config(void)
   }
 }
 
-
-
-
 /**
   * @brief SPI Initialization 
   * @param None
   * @retval None
   */
-
-
-
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
