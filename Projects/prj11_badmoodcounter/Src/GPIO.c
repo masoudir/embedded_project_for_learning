@@ -6,7 +6,7 @@
   * @param None
   * @retval None
   */
-static void MX_GPIO_Init(void)
+void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
@@ -21,14 +21,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = PUSH_BUTTON_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(PUSH_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
   //led_Pin 
   GPIO_InitStruct.Pin = LED_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
 
 
@@ -36,28 +36,28 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = UP_BUTTON;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(UP_BUTTON_PORT, &GPIO_InitStruct);
 
 //down button
   GPIO_InitStruct.Pin = DOWN_BUTTON;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(DOWN_BUTTON_PORT, &GPIO_InitStruct);
 
 //setting
   GPIO_InitStruct.Pin = SETTING_BUTTON;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(SETTING_BUTTON_PORT, &GPIO_InitStruct);
 
 //return 
   GPIO_InitStruct.Pin = RETURN_BUTTON;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(RETURN_BUTTON_PORT, &GPIO_InitStruct);
 
  // Init LCD GPIO
 
@@ -70,7 +70,7 @@ static void MX_GPIO_Init(void)
       .Alternate = 0
     };
 
-    HAL_GPIO_Init(GPIOA, &gpio_config);
+    HAL_GPIO_Init(LED_GPIO_Port, &gpio_config);
   }
 
 //PC13
@@ -84,7 +84,7 @@ static void MX_GPIO_Init(void)
           .Alternate = 0
     };
 
-    HAL_GPIO_Init(GPIOC, &gpio_config);
+    HAL_GPIO_Init(PUSH_BUTTON_GPIO_Port, &gpio_config);
   }
 
 
@@ -96,9 +96,9 @@ static void MX_GPIO_Init(void)
       .Pull = GPIO_NOPULL,
       .Speed = GPIO_SPEED_FREQ_LOW,
       .Alternate = 0
-    }
+    };
 
-    HAL_GPIO_Init(GPIOA, &gpio_config);
+    HAL_GPIO_Init(DC_GPIO_Port, &gpio_config);
   }
 //PA9
   {
@@ -108,9 +108,9 @@ static void MX_GPIO_Init(void)
       .Pull = GPIO_NOPULL,
       .Speed = GPIO_SPEED_FREQ_LOW,
       .Alternate = 0
-    }
+    };
 
-    HAL_GPIO_Init(GPIOA, &gpio_config);
+    HAL_GPIO_Init(RST_GPIO_Port, &gpio_config);
   }
 //PB6
   {

@@ -1,4 +1,5 @@
-#include "timer.h"
+#include "Timer.h"
+#include "main.h"
 
 TIM_HandleTypeDef htim2;//0.1s
 TIM_HandleTypeDef htim3;//1s

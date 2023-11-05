@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include"retarget.h"
+#include "GPIO.h"
+#include "UART.h"
+#include "Timer.h"
 //I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi2;
@@ -18,7 +21,7 @@ LCD_mode lcdmode = LCD_mode_0;
 
 void welcome_screen(void){
   printf("welcome message\r\n");
-}
+};
 
 void home_screen(void){
   printf("home screen\r\n");
@@ -31,9 +34,9 @@ void setting_screen(void){
 };
 
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
-static void MX_TIM2_Init(void);
+void MX_GPIO_Init(void);
+void MX_USART2_UART_Init(void);
+void MX_TIM2_Init(void);
 void LCD_init(void);
 
 
@@ -55,7 +58,7 @@ void LCD_init(void);
   // if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET) {
   //         HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
   //       }        
-}
+
 
 
 
@@ -79,7 +82,7 @@ hspi2 = (SPI_HandleTypeDef) {
     }
 };
        
-}
+};
 
 
 
@@ -113,7 +116,7 @@ int main(void)
   }
   /* USER CODE END 3 */
 
-}
+};
 
 /**
   * @brief System Clock Configuration
@@ -184,7 +187,7 @@ void Error_Handler(void)
   {
   }
   /* USER CODE END Error_Handler_Debug */
-}
+};
 
 #ifdef  USE_FULL_ASSERT
 /**
