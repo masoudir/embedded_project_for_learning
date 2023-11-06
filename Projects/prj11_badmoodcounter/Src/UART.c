@@ -1,5 +1,7 @@
 
 #include "UART.h"
+extern void Error_Handler(void);
+extern UART_HandleTypeDef huart2;
 
 void MX_USART2_UART_Init(void)
 {

@@ -4,11 +4,6 @@
 #include <stdio.h>
 #include "stm32f4xx_hal.h"
 
-/************for uart pin********************************/
-#define USART_TX_Pin GPIO_PIN_2
-#define USART_TX_GPIO_Port GPIOA
-#define USART_RX_Pin GPIO_PIN_3
-#define USART_RX_GPIO_Port GPIOA
 
 
 /********************for led and push button pins*************************************/

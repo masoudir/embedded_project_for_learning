@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "UART.h"
 
 /* USER CODE BEGIN Includes */
 

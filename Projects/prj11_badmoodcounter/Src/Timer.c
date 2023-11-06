@@ -236,3 +236,4 @@ void TIM2_IRQHandler(void)
 
           //printf("lcdmode=%d\n", lcdmode);
   }
+}
