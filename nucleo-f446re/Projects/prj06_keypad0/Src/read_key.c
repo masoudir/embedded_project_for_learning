@@ -20,8 +20,8 @@
 /* Includes -------------------------------------------------------------*/
  #include "read_key.h"
  extern UART_HandleTypeDef huart2;
-extern char row[4];
-extern char col[3];
+extern uint16_t row[4];
+extern uint16_t col[3];
 
 char lookup_table[4][3]={
 {'1' , '2' , '3'},
@@ -55,13 +55,19 @@ char lookup_table[4][3]={
   }
 
   int read_col(){
+    bool col[3] = {};
+    col[0] = HAL_GPIO_ReadPin( GPIOC,GPIO_PIN_6);
+    col[1] = HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7);
+    col[2] = HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_8);
+
+    printf("%d %d %d \r\n", col[0], col[1], col[2]);
     //if ((HAL_GPIO_ReadPin( GPIOC,col[0]) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,col[1]) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,col[2]) == GPIO_PIN_RESET) ){ 
       // return 0;}
-   if ((HAL_GPIO_ReadPin( GPIOC,GPIO_PIN_6) ==GPIO_PIN_SET) && (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) ==GPIO_PIN_RESET)  &&( HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_8) == GPIO_PIN_RESET) ){ 
+   if ((col[0] ==GPIO_PIN_SET) && (col[1] ==GPIO_PIN_RESET)  &&( col[2] == GPIO_PIN_RESET) ){ 
        return 1;}
-   else if ((HAL_GPIO_ReadPin( GPIOC,GPIO_PIN_6) ==GPIO_PIN_RESET) && (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_SET) && (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_8) == GPIO_PIN_RESET )){
+   else if ((col[0] ==GPIO_PIN_RESET) && (col[1] == GPIO_PIN_SET) && (col[2] == GPIO_PIN_RESET )){
        return 2;}
-   else if ((HAL_GPIO_ReadPin( GPIOC,GPIO_PIN_6) ==GPIO_PIN_RESET)  && (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET)  && (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_8) == GPIO_PIN_SET)){
+   else if ((col[0] ==GPIO_PIN_RESET)  && (col[1] == GPIO_PIN_RESET)  && (col[2] == GPIO_PIN_SET)){
        return 3;}
 
        return 0;
