@@ -22,9 +22,6 @@
 #include "stm32f4xx_it.h"
 extern int i;
 extern uint32_t counter;
-extern int n;
-extern int j;
-extern int k;
 
 uint32_t timer_count = 0;
 uint32_t event_timer_count[4] = {};
@@ -247,9 +244,7 @@ void TIM2_IRQHandler(void)
     
   }
 
-  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_RESET) {
-    button_state = 0;
-  }
+ 
  
 }
 
@@ -259,11 +254,14 @@ void EXTI0_IRQHandler(void)
   
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
   
-  if(button_state == 0) {
+  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_SET) {
     timer_count = 0;
     // event_timer_count[0] = timer_count;
     button_state = 1;
     increase_digit();
+  }
+   else{
+    button_state = 0;
   }
   /* USER CODE BEGIN EXTI0_IRQn 1 */
 
