@@ -1,12 +1,13 @@
 #include "Timer.h"
 #include "main.h"
+#include "GPIO.h"
 
 TIM_HandleTypeDef htim2;//0.1s
 TIM_HandleTypeDef htim3;//1s
 
 
 extern uint32_t count0;
-extern int16_t badmoodcount;
+int16_t badmoodcount = 0;
 extern int mytime;
 extern int array[7];
 extern LCD_mode lcdmode;
@@ -178,6 +179,7 @@ void TIM3_IRQHandler(void)
       for (int j = 5; j >= 0; j--) {
         array[j+1] = array[j];
       }; 
+      printf("badmood reset \r\n ");
       badmoodcount=0;
       array[0]=0;
       mytime=0;
@@ -200,32 +202,32 @@ void TIM2_IRQHandler(void)
     lcdmode=LCD_mode_0;
   }
 
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
+  if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
     lcdmode=LCD_mode_1;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100);
     //printf("lcdmode=%d\n", lcdmode);
      
   }
 
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
+  if((HAL_GPIO_ReadPin(UP_BUTTON_PORT,UP_BUTTON) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
     badmoodcount--;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
     //printf("badmood=%d\n", badmoodcount);
   }
   
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
+  if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    //printf("badmood=%d\n", badmoodcount);
+    printf("badmood=%d\n", badmoodcount);
   }
 
-  if((HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET)){
+  if((HAL_GPIO_ReadPin(SETTING_BUTTON_PORT,SETTING_BUTTON) == GPIO_PIN_RESET)){
     lcdmode=LCD_mode_2;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
     //printf("lcdmode=%d\n", lcdmode);
   }
 
-  if((HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET)){
+  if((HAL_GPIO_ReadPin(RETURN_BUTTON_PORT,RETURN_BUTTON) == GPIO_PIN_RESET)){
          if (lcdmode==LCD_mode_2){
              lcdmode=LCD_mode_1;
          }

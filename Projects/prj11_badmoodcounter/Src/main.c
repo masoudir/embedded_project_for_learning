@@ -14,7 +14,7 @@ SPI_HandleTypeDef hspi2;
 UART_HandleTypeDef huart2;
 
 uint32_t count0=0;
-int16_t badmoodcount=0;
+
 int mytime=0;
 int array[7]={0};
 LCD_mode lcdmode = LCD_mode_0;
