@@ -49,7 +49,7 @@ char lookup_table[4][3]={
 
        } 
 
-       printf(" %d = i\n\r ",j);
+       //printf(" %d = i\n\r ",j);
        // HAL_Delay(1000);
       }
   }
