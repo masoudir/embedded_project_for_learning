@@ -23,8 +23,8 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-uint16_t row[4]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8,GPIO_PIN_9};
-uint16_t col[3]={GPIO_PIN_6,GPIO_PIN_7,GPIO_PIN_8};
+uint16_t  row[4]={ GPIO_PIN_6, GPIO_PIN_7, GPIO_PIN_8, GPIO_PIN_9 };
+uint16_t  col[3]={ GPIO_PIN_6, GPIO_PIN_7, GPIO_PIN_8 };
 
 
 
