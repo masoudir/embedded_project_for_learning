@@ -20,15 +20,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
-extern int i;
-extern uint32_t counter;
-extern int n;
-extern int j;
-extern int k;
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
-
+extern uint8_t timer;
+extern int digit[4];
+int i, j, n, m;
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -60,8 +58,7 @@ extern int k;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim2;
-extern UART_HandleTypeDef huart2;
+extern TIM_HandleTypeDef htim1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -204,75 +201,61 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
 
-// /**
-//   * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
-//   */
-// void TIM1_TRG_COM_TIM11_IRQHandler(void)
-// {
-//   /* USER CODE BEGIN TIM1_TRG_COM_TIM11_IRQn 0 */
-
-//   /* USER CODE END TIM1_TRG_COM_TIM11_IRQn 0 */
-//   HAL_TIM_IRQHandler(&htim1);
-//   /* USER CODE BEGIN TIM1_TRG_COM_TIM11_IRQn 1 */
-//   HAL_UART_Transmit(&huart2, (const uint8_t*)"tick", 4, 100);
-//   /* USER CODE END TIM1_TRG_COM_TIM11_IRQn 1 */
-// }
-
-
-void TIM2_IRQHandler(void)
+/**
+  * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
+  */
+void TIM1_UP_TIM10_IRQHandler(void)
 {
-  HAL_TIM_IRQHandler(&htim2);
- // HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
- if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
- i++;
-      printf("%d = i\n\r",i);
-  k=0;    
- 
-   if (i>=3 && k==0){   
-      
-     counter++;
-          k=1;
-            display_digit(counter-1);
-    printf("%ld = count\n\r",counter);}
-      if (counter >= 10) {
-         counter = 0;
-      }
+  /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 0 */
 
-  } 
- else {
-  
-      k=0;
-      i=0;
-    } 
+  /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim1);
+ 
+timer++;
+
+for(i=0; i<=9 ;i++){
+
+  HAL_GPIO_WritePin(GPIOC ,D[] ,GPIO_PIN_SET);
+  digit[3]++;
+
+}
+if(timer % 10 == 0){
+
+  for(j=0; j<=9 ;j++){
+   HAL_GPIO_WritePin(GPIOC ,D[] ,GPIO_PIN_SET);
+  digit[2]++;
+  }
+}
+else if(timer %100 == 0){
+
+  for(n=0; n<=9 ;n++){
+   HAL_GPIO_WritePin(GPIOC ,D[] ,GPIO_PIN_SET);
+  digit[1]++;
+  }
+}
+else if(timer %1000 == 0){
+
+  for(m=0; m<=9 ;m++){
+   HAL_GPIO_WritePin(GPIOC ,D[] ,GPIO_PIN_SET);
+  digit[0]++;;
+  }
+ }
 }
 
- 
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
 
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(B1_Pin);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-
-
-void EXTI0_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI0_IRQn 0 */
-
-  /* USER CODE END EXTI0_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
-  /* USER CODE BEGIN EXTI0_IRQn 1 */
-
- if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0)== GPIO_PIN_SET){
-     
-             counter++;
-    display_digit(counter-1);
-    printf("%ld = count\n\r",counter);
-    }
-
-      if (counter >= 10) {
-         counter = 0;
-      }
-}
-
-
-

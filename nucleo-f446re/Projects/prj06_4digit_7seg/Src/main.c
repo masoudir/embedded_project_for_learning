@@ -18,15 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stdio.h>
-uint32_t timer=0;
-uint32_t counter=0;
-uint32_t num;
-int m;
-int i;
-int j;
-int n;
-int k;
+int digit[4]={};
+uint8_t timer;
+uint16_t D[4]={ GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 };
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -48,9 +42,7 @@ int k;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
-
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim1;
 
 UART_HandleTypeDef huart2;
 
@@ -61,57 +53,8 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM2_Init(void);
-
-
- 
-  
-
-
-void display_digit(uint8_t timer){
-  if ( timer==0){
-     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-
-     HAL_GPIO_WritePin( GPIOB,GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14,GPIO_PIN_SET);}
-
-   if ( timer==1){
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-
-    HAL_GPIO_WritePin( GPIOB, GPIO_PIN_1|GPIO_PIN_2, GPIO_PIN_SET);}
-
- else if( timer==2){
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_12|GPIO_PIN_13|
-        GPIO_PIN_15 , GPIO_PIN_SET);}
- else if(timer ==3){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|
-        GPIO_PIN_15 , GPIO_PIN_SET);}
- else if (timer== 4){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB,  GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_14|
-        GPIO_PIN_15 , GPIO_PIN_SET);}
- else if(timer==5){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_14|
-        GPIO_PIN_15 , GPIO_PIN_SET);} 
- else if(timer==6){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_SET);} 
- else if(timer==7){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2, GPIO_PIN_SET);} 
- else if(timer==8){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_SET);} 
- else if(timer==9){
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_RESET);
-   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12|GPIO_PIN_14|GPIO_PIN_15,GPIO_PIN_SET);
-
-}
-}
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -120,7 +63,81 @@ void display_digit(uint8_t timer){
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
+int Extract_digit(){
 
+   if (number > 999 || number <10000) {
+    // Extract and separate each digit
+     digit[0] = number / 1000;
+     digit[1] = (number % 1000) / 100;
+     digit[2] = (number % 100) / 10;
+     digit[3] = number % 10;
+    
+   }
+}
+
+void Reset_pins(){
+
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 , GPIO_PIN_RESET);
+}
+
+void display_digit(uint8_t timer){
+  if ( timer ==0 ){
+     
+     Reset_pins();
+     HAL_GPIO_WritePin( GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_SET);
+  }
+
+   if ( timer == 1){
+
+    Reset_pins();
+    HAL_GPIO_WritePin( GPIOB, GPIO_PIN_2|GPIO_PIN_4, GPIO_PIN_SET);
+  }
+
+ else if( timer == 2){
+
+    Reset_pins();
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1| GPIO_PIN_2|GPIO_PIN_5|GPIO_PIN_6|
+        GPIO_PIN_8 , GPIO_PIN_SET);
+  }
+ else if(timer == 3){
+
+    Reset_pins();
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1| GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|
+        GPIO_PIN_8 , GPIO_PIN_SET);
+  }
+ else if (timer == 4){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB,  GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_7|
+        GPIO_PIN_8 , GPIO_PIN_SET);
+  }
+ else if(timer == 5){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7|
+        GPIO_PIN_8 , GPIO_PIN_SET);
+  } 
+ else if(timer == 6){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8, GPIO_PIN_SET);
+  } 
+ else if(timer == 7){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4, GPIO_PIN_SET);
+  } 
+ else if(timer == 8){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 ,GPIO_PIN_SET);
+  } 
+ else if(timer == 9){
+
+   Reset_pins();
+   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_8,GPIO_PIN_SET);
+  }
+}
 /**
   * @brief  The application entry point.
   * @retval int
@@ -141,7 +158,7 @@ int main(void)
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  //SystemClock_Config();
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -149,12 +166,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
   MX_USART2_UART_Init();
-   RetargetInit(&huart2);
-  MX_TIM2_Init();
-
- 
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -163,13 +176,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-   
+    /* USER CODE END WHILE */
 
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
 }
-  
-}
-
-
 
 /**
   * @brief System Clock Configuration
@@ -219,110 +231,56 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief I2C1 Initialization Function
+  * @brief TIM1 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_I2C1_Init(void)
+static void MX_TIM1_Init(void)
 {
 
-  /* USER CODE BEGIN I2C1_Init 0 */
+  /* USER CODE BEGIN TIM1_Init 0 */
 
-  /* USER CODE END I2C1_Init 0 */
+  /* USER CODE END TIM1_Init 0 */
 
-  /* USER CODE BEGIN I2C1_Init 1 */
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 0;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 65535;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN I2C1_Init 2 */
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_DISABLE;
+  sSlaveConfig.InputTrigger = TIM_TS_ITR0;
+  if (HAL_TIM_SlaveConfigSynchro(&htim1, &sSlaveConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
 
-  /* USER CODE END I2C1_Init 2 */
+  /* USER CODE END TIM1_Init 2 */
 
-}
-
-/**
-  * @brief TIM3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
-
-  /* 
-        Enable clock to Timer-2 
-        
-        NOTE: This is lagacy Macro. The better approach is the
-        use of HAL_TIM_ConfigClockSource function.
-    */
-    __HAL_RCC_TIM2_CLK_ENABLE();
-    
-    /*
-        From STM32F407 datasheet, Timer2 is clocked from
-        APB1 bus (42Mhz max). In default configuration
-        Timer-2 is receiving 16Mhz (HSI) bus clock.
-    */        
-    
-    /***************************************************
-                   Timer-2 Configuration:
-    ****************************************************/
-    
-    /* Select Timer-2 for further configuration */
-    htim2.Instance = TIM2;
-    
-    /*
-        Divide the timer-2 input frequency (16Mhz)
-        by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
-    */
-    htim2.Init.Prescaler   = 2000;
-    
-    #if (UP_COUNTER)
-     /* Up-Counter mode*/
-     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-    #else 
-      htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
-    #endif
-
-    /*
-        We want the time count to be 500msec (half a second).
-        As the input frequency is 16khz so the total
-        counts required for 500msec delay:
-        
-        total counts = 500msec * f
-                     = (.5 sec) * 16,000
-                     = 8,000
-                     = 0x1F40
-    */
-    htim2.Init.Period = 8000;
-        
-    /*
-        Finally initialize Timer-2
-    */
-    while (HAL_TIM_Base_Init(&htim2)!= HAL_OK);
-
-    /*
-        Enable timer-2 IRQ interrupt
-    */
-    HAL_TIM_Base_Start_IT(&htim2);
-
-    /* Enable interrupt at IRQ-Level */
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
-    
-    /*
-        Start the timer
-    */
-    HAL_TIM_Base_Start(&htim2);
 }
 
 /**
@@ -376,26 +334,33 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC,D[0]| D[1]| D[2] |D[3], GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
-                          |GPIO_PIN_13 |GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
-
-
-
-  
-  
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5
+                          |GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin =GPIO_PIN_13;
+  GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-GPIO_InitStruct.Pin =GPIO_PIN_0;
-  GPIO_InitStruct.Mode =GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL ;
+  /*Configure GPIO pins : PC0 PC1 PC2 PC3 */
+  GPIO_InitStruct.Pin = D[0]| D[1]| D[2] |D[3];
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -404,28 +369,22 @@ GPIO_InitStruct.Pin =GPIO_PIN_0;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-   /*Configure GPIO pins : PB0 PB1 PB2 PB12
-                           PB13 PB15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
-                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  /*Configure GPIO pins : PB1 PB2 PB4 PB5
+                           PB6 PB7 PB8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_4|GPIO_PIN_5
+                          |GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
- 
-   
-
-/* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-}
-
-  
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
-
+}
 
 /* USER CODE BEGIN 4 */
 
@@ -462,11 +421,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-
-
-
-
-
- 
-
