@@ -212,13 +212,13 @@ void TIM2_IRQHandler(void)
   if((HAL_GPIO_ReadPin(UP_BUTTON_PORT,UP_BUTTON) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
     badmoodcount--;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    //printf("badmood=%d\n", badmoodcount);
+    printf("decrease badmood=%d\r\n", badmoodcount);
   }
   
   if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    printf("badmood=%d\n", badmoodcount);
+    printf("icrease badmood=%d\r\n", badmoodcount);
   }
 
   if((HAL_GPIO_ReadPin(SETTING_BUTTON_PORT,SETTING_BUTTON) == GPIO_PIN_RESET)){

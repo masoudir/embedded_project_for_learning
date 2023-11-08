@@ -34,6 +34,7 @@ void MX_GPIO_Init(void)
 
 // up button
   GPIO_InitStruct.Pin = UP_BUTTON;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(UP_BUTTON_PORT, &GPIO_InitStruct);
