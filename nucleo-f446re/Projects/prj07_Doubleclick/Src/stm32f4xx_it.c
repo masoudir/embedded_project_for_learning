@@ -259,7 +259,7 @@ void TIM2_IRQHandler(void)
     else if(button_state == 2 && timer_count  > 10) {
     increase_digit();
     button_state = 0;
-       printf("%ld = time\n\r",timer_count);
+      // printf("%ld = time\n\r",timer_count);
   }  
 
   else if (button_state == 3 && HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0) == GPIO_PIN_RESET) {

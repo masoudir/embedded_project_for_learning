@@ -234,8 +234,10 @@ void EXTI0_IRQHandler(void)
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
+
  button_state1 = 1;
- if( T1 != T2 ){
+
+ if( T1 - T2 > 4 ){
     --countt;}
  
 printf("%d = count\n\r",countt);
@@ -249,26 +251,29 @@ printf("%d = count\n\r",countt);
 void TIM2_IRQHandler(void)
 {
   timer++;
+  //printf("%ld = count\n\r", timer);
   HAL_TIM_IRQHandler(&htim1);
 
-  if (button_state1 == 1){
+    if (button_state1 == 1){
+
        T1 =timer;
+       button_state1 = 0;}
 
     if (button_state2 == 1){
 
         T2 = timer;
-
+        button_state2 = 0;
          }
 
-      if( T1 == T2 ){
+    if( T1 - T2 <= 4 ){
          countt=0;
      }
        
-   }
+ }
  
-  button_state1 = 0;
-  button_state2 = 0;
-}
+ 
+ 
+
 
 
 
@@ -288,8 +293,8 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(B1_Pin);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-  button_state2 =1;
- if( T1 != T2 ){
+  button_state2 = 1;
+ if(T1 - T2 > 4){
      ++countt;
 
  }
