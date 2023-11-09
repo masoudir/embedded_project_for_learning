@@ -256,7 +256,7 @@ void TIM2_IRQHandler(void)
      timer_count = 0;
   
   } 
-    else if(button_state == 2 && timer_count  > 10) {
+    else if(button_state == 2 && timer_count  > 3) {
     increase_digit();
     button_state = 0;
       // printf("%ld = time\n\r",timer_count);
