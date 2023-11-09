@@ -192,12 +192,15 @@ void MX_GPIO_Init(void)
 Pin     Description         Type
 PA5     LED PIN             output
 PC13    PUSH BUTTION PIN    input 
+----------lcd--------------------
 PA8     DC PIN(data/command)output
 PA9     RST                 output
 PB6     CS                  output
 PC1     MOSI                output
 PC2     MISO                input
 PB10    CLK                 output  
+
+------------4 buttons------------------
 PA12    up button           input
 PA11    down button         input
 PA10    setting button      input

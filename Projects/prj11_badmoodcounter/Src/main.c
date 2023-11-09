@@ -8,9 +8,12 @@
 #include "GPIO.h"
 #include "UART.h"
 #include "Timer.h"
-//I2C_HandleTypeDef hi2c1;
+#include "spi.h"
+#include "lcd.h"
 
-SPI_HandleTypeDef hspi2;
+
+
+
 UART_HandleTypeDef huart2;
 
 uint32_t count0=0;
@@ -40,6 +43,7 @@ extern void MX_TIM2_Init(void);
 void LCD_init(void);
 
 
+
   /*****************************below code is for button test***********************************/
   // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
   //         //count0++;
@@ -63,27 +67,6 @@ void LCD_init(void);
 
 
 
-void LCD_init(){
-   
-hspi2 = (SPI_HandleTypeDef) {
-    .Instance = SPI2,
-    .Init = {
-      .Mode = SPI_MODE_MASTER,
-      .Direction = SPI_DIRECTION_2LINES,
-      .DataSize = SPI_DATASIZE_8BIT,
-      .CLKPolarity = SPI_POLARITY_LOW,
-      .CLKPhase = SPI_PHASE_1EDGE,
-      .NSS = SPI_NSS_SOFT,
-      .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4,
-      .FirstBit = SPI_FIRSTBIT_MSB,
-      .TIMode = SPI_TIMODE_DISABLE,
-      .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
-      .CRCPolynomial = 10
-    }
-};
-       
-};
-
 
 
 int main(void)
@@ -95,7 +78,8 @@ int main(void)
   RetargetInit(&huart2);
   MX_TIM2_Init();
   MX_TIM3_Init();
-
+  spi_init();
+  test_lcd();
   while (1)
   {
     /* USER CODE END WHILE */
