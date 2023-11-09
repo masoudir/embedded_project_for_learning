@@ -18,7 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <stdio.h>
 
+char menu[3][16]={ "Spd","Temp" ,"Count"};
+ int value[3]={5,6,8};
+ char val[5]= {};
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -93,54 +97,83 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
-  HD44780_Clear();
-  HD44780_SetCursor(8,0);
+   HD44780_SetCursor(0,0);
   HD44780_PrintStr("HELLO");
-  HD44780_Blink();
-  HD44780_SetCursor(8,1);
-  HD44780_PrintStr("HI");
-  HAL_Delay(200);
 
+ void LCD_DisplayMenu1(void) {
   HD44780_Clear();
-  HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Mobin Farya");
-  HAL_Delay(200);
-  HD44780_NoBacklight();
-  HAL_Delay(200);
-  HD44780_Backlight();
 
-  HAL_Delay(200);
-  HD44780_Cursor();
-  HAL_Delay(200);
-  HD44780_Blink();
-  HAL_Delay(500);
-  HD44780_NoBlink();
-  HAL_Delay(200);
-  HD44780_NoCursor();
-  HAL_Delay(200);
+   
+    for (int i = 0; i < 2; i++) {
+         HD44780_SetCursor(0, i);  
+          HD44780_PrintStr(menu[i]);  
+            HD44780_SetCursor(6, i); 
+            sprintf( val ,"%d" ,value[i]);
+               HD44780_PrintStr(val);  
+             
+    }
+}
 
-  HD44780_NoDisplay();
-  HAL_Delay(20);
-  HD44780_Display();
-
+ void LCD_DisplayMenu2(void) {
   HD44780_Clear();
-  HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Learning STM32 with LCD is fun :-)");
+
+   
+    for (int i = 1; i < 3; i++) {
+         HD44780_SetCursor(0, i-1);  
+          HD44780_PrintStr(menu[i]);  
+            HD44780_SetCursor(6, i-1); 
+            sprintf( val ,"%d" ,value[i]);
+               HD44780_PrintStr(val);  
+             
+    }
+}
+
+/* int count_char() {
   
 
-  
+   
+    int charCount[256] = {0};  
+
+   
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 3; j++) {
+
+            char currentChar = menu[i][j];
+           charCount[(unsigned char)currentChar]++;
+        }
+    } 
+
+    
+    for (int i = 0; i < 256; i++) {
+        if (charCount[i] > 0) {
+             HD44780_SetCursor(0, charCount[i]); 
+             sprintf( val ,"%d" ,value[i]);
+               HD44780_PrintStr(val);  
+        }
+    }
+
+    return 0;
+}*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    
     /* USER CODE END WHILE */
+    
+
+ if(HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
+  LCD_DisplayMenu1();}
+
+if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0) == GPIO_PIN_SET){
+  LCD_DisplayMenu2();
  
+ }
     /* USER CODE BEGIN 3 */
-  }
+  
   /* USER CODE END 3 */
+}
 }
 
 /**
@@ -281,6 +314,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
+  GPIO_InitStruct.Pin =GPIO_PIN_0;
+  GPIO_InitStruct.Mode =GPIO_MODE_IT_RISING ;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN ;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+ 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
