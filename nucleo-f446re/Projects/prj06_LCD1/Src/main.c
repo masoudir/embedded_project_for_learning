@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -94,40 +94,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
   HD44780_Clear();
-  HD44780_SetCursor(8,0);
+  HD44780_SetCursor(0,0);
   HD44780_PrintStr("HELLO");
   HD44780_Blink();
-  HD44780_SetCursor(8,1);
-  HD44780_PrintStr("HI");
-  HAL_Delay(200);
+  HD44780_SetCursor(7,1);
+  HD44780_PrintStr("world");
+  HAL_Delay(1000);
 
-  HD44780_Clear();
-  HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Mobin Farya");
-  HAL_Delay(200);
-  HD44780_NoBacklight();
-  HAL_Delay(200);
-  HD44780_Backlight();
-
-  HAL_Delay(200);
-  HD44780_Cursor();
-  HAL_Delay(200);
-  HD44780_Blink();
-  HAL_Delay(500);
-  HD44780_NoBlink();
-  HAL_Delay(200);
-  HD44780_NoCursor();
-  HAL_Delay(200);
-
-  HD44780_NoDisplay();
-  HAL_Delay(20);
-  HD44780_Display();
-
-  HD44780_Clear();
-  HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Learning STM32 with LCD is fun :-)");
-  
-
+ 
   
   /* USER CODE END 2 */
 
@@ -136,7 +110,19 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+      char snum[5];
+  for ( int x = 1; x <= 20 ; x++ )
+  {
+   // itoa(x, snum, 10);
+   sprintf(snum, "%d", x);
+    HD44780_Clear();
+    HD44780_SetCursor(7,0);
+    HD44780_PrintStr(snum);
+    HD44780_SetCursor(0,0);
+    HD44780_PrintStr("count:");
+   
+    HAL_Delay (1000);
+  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
