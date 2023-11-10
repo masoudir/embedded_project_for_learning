@@ -98,7 +98,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
    HD44780_SetCursor(0,0);
-  HD44780_PrintStr("HELLO");
+  HD44780_PrintStr("Press one button");
 
  void LCD_DisplayMenu1(void) {
   HD44780_Clear();
@@ -108,8 +108,8 @@ int main(void)
          HD44780_SetCursor(0, i);  
           HD44780_PrintStr(menu[i]);  
             HD44780_SetCursor(6, i); 
-            sprintf( val ,"%d" ,value[i]);
-               HD44780_PrintStr(val);  
+          //  sprintf( val ,"%d" ,value[i]);
+           //    HD44780_PrintStr(val);  
              
     }
 }
@@ -122,38 +122,54 @@ int main(void)
          HD44780_SetCursor(0, i-1);  
           HD44780_PrintStr(menu[i]);  
             HD44780_SetCursor(6, i-1); 
-            sprintf( val ,"%d" ,value[i]);
-               HD44780_PrintStr(val);  
+           // sprintf( val ,"%d" ,value[i]);
+             //  HD44780_PrintStr(val);  
              
     }
 }
 
-/* int count_char() {
-  
 
-   
-    int charCount[256] = {0};  
-
-   
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 3; j++) {
-
-            char currentChar = menu[i][j];
-           charCount[(unsigned char)currentChar]++;
-        }
-    } 
-
+ int count_char1() {
     
-    for (int i = 0; i < 256; i++) {
-        if (charCount[i] > 0) {
-             HD44780_SetCursor(0, charCount[i]); 
-             sprintf( val ,"%d" ,value[i]);
-               HD44780_PrintStr(val);  
-        }
-    }
+    for (int raw = 0; raw < 2; raw++) {
 
-    return 0;
-}*/
+        int  charcount = 1;  
+
+        for (int col = 0; col < 16; col++) {
+
+            if( menu[raw][col] != '\0'){
+            charcount++;
+            }
+          
+        }
+      HD44780_SetCursor(charcount, raw); 
+      sprintf( val ,"%d" ,value[raw]);
+      HD44780_PrintStr(val);  
+    } 
+      return 0;     
+  }
+
+  int count_char2() {
+    
+    for (int raw = 1; raw < 3; raw++) {
+
+        int  charcount = 1;  
+
+        for (int col = 0; col < 16; col++) {
+
+            if( menu[raw][col] != '\0'){
+            charcount++;
+            }
+          
+        }
+      HD44780_SetCursor(charcount, raw-1); 
+      sprintf( val ,"%d" ,value[raw]);
+      HD44780_PrintStr(val);  
+    } 
+      return 0;     
+  }
+   
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -164,11 +180,13 @@ int main(void)
     
 
  if(HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
-  LCD_DisplayMenu1();}
+  LCD_DisplayMenu1();
+   count_char1();
+   }
 
 if(HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_0) == GPIO_PIN_SET){
   LCD_DisplayMenu2();
- 
+   count_char2();
  }
     /* USER CODE BEGIN 3 */
   
