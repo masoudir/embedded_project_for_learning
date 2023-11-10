@@ -4,8 +4,6 @@
 SPI_HandleTypeDef hspi2;
 /* Private variables ---------------------------------------------------------*/
 void spi_init(void){
-
-
 hspi2 = (SPI_HandleTypeDef) {
     .Instance = SPI2,
     .Init = {
