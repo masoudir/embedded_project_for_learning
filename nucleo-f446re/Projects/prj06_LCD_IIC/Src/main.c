@@ -93,12 +93,13 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
  SSD1306_Init();
- // char snum[5];
+ char snum[10];
 
   SSD1306_GotoXY (0,0);
-  SSD1306_Puts ("NIZAR", &Font_11x18, 1);
+  SSD1306_Puts ("HELLO", &Font_11x18, 1);
+   HAL_Delay (1000);
   SSD1306_GotoXY (0, 30);
-  SSD1306_Puts ("MOHIDEEN", &Font_11x18, 1);
+  SSD1306_Puts ("Farya", &Font_11x18, 1);
   SSD1306_UpdateScreen();
   HAL_Delay (1000);
 
@@ -109,7 +110,7 @@ int main(void)
   SSD1306_Stopscroll();
   SSD1306_Clear();
   SSD1306_GotoXY (35,0);
-  SSD1306_Puts ("SCORE", &Font_11x18, 1);
+  SSD1306_Puts ("SCORE", &Font_11x18, 1); 
 
   
   /* USER CODE END 2 */
@@ -120,9 +121,10 @@ int main(void)
   {
     
     /* USER CODE END WHILE */
- /* for ( int x = 1; x <= 10000 ; x++ )
+   for ( int x = 1; x <= 10000 ; x++ )
 	{
-		sprintf(x, snum, 10);
+	    sprintf(snum, "%d", x);
+
 		SSD1306_GotoXY (0, 30);
 		SSD1306_Puts ("             ", &Font_16x26, 1);
 		SSD1306_UpdateScreen();
@@ -142,9 +144,9 @@ int main(void)
 		SSD1306_UpdateScreen();
 		HAL_Delay (500);
 	    }
-    /* USER CODE BEGIN 3 */ 
+     
   }
-  /* USER CODE END 3 */
+  
 }
 
 /**
@@ -210,7 +212,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;

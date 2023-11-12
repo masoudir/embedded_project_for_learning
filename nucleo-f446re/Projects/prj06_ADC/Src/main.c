@@ -125,9 +125,9 @@ int main(void)
 
     // read_value = (read_value *5 / 4095);
      //read_value = read_value*100 ;
-   //printf("vol = %d\n\r",read_value);
+   printf("vol = %d\n\r",read_value);
 
-   sprintf(vol ,"%d\n\r" , read_value);
+   sprintf(vol ,"%d" , read_value);
   
    HD44780_SetCursor(8,0);
    HD44780_PrintStr(vol);
@@ -135,7 +135,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
     HAL_ADC_Stop(&hadc1);
- // /* USE */R CODE END 3 
+  /* USE */R CODE END 3 
 }
 }
 /**
