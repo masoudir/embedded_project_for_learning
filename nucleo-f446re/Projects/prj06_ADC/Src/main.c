@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
- uint16_t read_value;
+uint16_t read_value;
+char vol[8];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,32 +95,49 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
-  MX_I2C1_Init();
-  MX_USART2_UART_Init();
+   MX_USART2_UART_Init();
   RetargetInit(&huart2);
+  MX_I2C1_Init();
+ 
+ 
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE BEGIN 2 */
+  
+  /* USER CODE END 2 */
+ 
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
-  /* USER CODE BEGIN 2 */
-   HAL_ADC_Start(&hadc1);
-  /* USER CODE END 2 */
-
+  HD44780_Clear();
+  HD44780_SetCursor(0,0);
+  HD44780_PrintStr("vol = ");
+  HAL_Delay(200);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    
     /* USER CODE END WHILE */
-  
-  HAL_ADC_PollForConversion( &hadc1, 300);
+    HAL_ADC_Start(&hadc1);
+  if(HAL_ADC_PollForConversion( &hadc1, 100) == HAL_OK ){
 
    read_value = HAL_ADC_GetValue(&hadc1);
 
-   printf("%d\n\r" , read_value);
+    // read_value = (read_value *5 / 4095);
+     //read_value = read_value*100 ;
+   //printf("vol = %d\n\r",read_value);
+
+   sprintf(vol ,"%d\n\r" , read_value);
+  
+   HD44780_SetCursor(8,0);
+   HD44780_PrintStr(vol);
    HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
+    HAL_ADC_Stop(&hadc1);
+ // /* USE */R CODE END 3 
 }
-
+}
 /**
   * @brief System Clock Configuration
   * @retval None
