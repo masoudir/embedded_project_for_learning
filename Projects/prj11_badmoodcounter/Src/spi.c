@@ -1,9 +1,13 @@
 
 #include "spi.h"
 #include "main.h"
+#include "GPIO.h"
 SPI_HandleTypeDef hspi2;
 /* Private variables ---------------------------------------------------------*/
 void spi_init(void){
+
+  __HAL_RCC_SPI2_CLK_ENABLE();
+
 hspi2 = (SPI_HandleTypeDef) {
     .Instance = SPI2,
     .Init = {
@@ -20,6 +24,47 @@ hspi2 = (SPI_HandleTypeDef) {
       .CRCPolynomial = 10
     }
   };
+
+
+//PC1
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_MOSI_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF7_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_MOSI_PORT, &gpio_config);
+  }
+
+//PC2
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_MISO_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF5_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_MISO_PORT, &gpio_config);
+  }  
+
+  //PB10
+
+  {
+    GPIO_InitTypeDef gpio_config = {
+      .Pin = SPI2_CLK_PIN,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+      .Alternate = GPIO_AF5_SPI2
+    };
+
+    HAL_GPIO_Init(SPI2_CLK_PORT, &gpio_config);
+  }    
 
   if (HAL_SPI_Init(&hspi2) != HAL_OK)
   {

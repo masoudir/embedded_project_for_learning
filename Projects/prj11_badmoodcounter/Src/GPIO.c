@@ -17,6 +17,8 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  
+
   // PUSH BUTTON PIN
   GPIO_InitStruct.Pin = PUSH_BUTTON_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
@@ -130,45 +132,6 @@ void MX_GPIO_Init(void)
 
 
 
-//PC1
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_MOSI_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF7_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_MOSI_PORT, &gpio_config);
-  }
-
-//PC2
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_MISO_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF5_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_MISO_PORT, &gpio_config);
-  }  
-
-  //PB10
-
-  {
-    GPIO_InitTypeDef gpio_config = {
-      .Pin = SPI2_CLK_PIN,
-      .Mode = GPIO_MODE_AF_PP,
-      .Pull = GPIO_NOPULL,
-      .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
-      .Alternate = GPIO_AF5_SPI2
-    };
-
-    HAL_GPIO_Init(SPI2_CLK_PORT, &gpio_config);
-  }    
 
     /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_PIN, GPIO_PIN_RESET);

@@ -20,7 +20,7 @@
 #define RST_PIN GPIO_PIN_9
 #define RST_GPIO_Port GPIOA
 
-#define CS_PIN GPIO_PIN_6
+#define CS_PIN GPIO_PIN_7
 #define CS_GPIO_Port GPIOB
 
 #define SPI2_MOSI_PIN GPIO_PIN_1
