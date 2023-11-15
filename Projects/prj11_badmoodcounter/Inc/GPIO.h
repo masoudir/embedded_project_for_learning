@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "stm32f4xx_hal.h"
 
-
+void MX_GPIO_Init(void);
 
 /********************for led and push button pins*************************************/
 #define LED_PIN GPIO_PIN_5

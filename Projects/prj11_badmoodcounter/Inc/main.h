@@ -14,6 +14,9 @@
 #include"stm32f4xx_hal_spi.h"
 #include <stdbool.h>
 
+void welcome_screen(void);
+void home_screen(void);
+void setting_screen(void);
 typedef enum {
      LCD_mode_0,//welcome screen
      LCD_mode_1,//home screen

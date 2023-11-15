@@ -11,36 +11,28 @@
 #include "spi.h"
 #include "lcd.h"
 
-
-
-
 UART_HandleTypeDef huart2;
-
 uint32_t count0=0;
-
 int mytime=0;
 int array[7]={0};
 LCD_mode lcdmode = LCD_mode_0;
 
-void welcome_screen(void){
-  printf("welcome message\r\n");
-};
+// void welcome_screen(void){
+//   printf("welcome message\r\n");
+// };
 
-void home_screen(void){
-  printf("home screen\r\n");
+// void home_screen(void){
+//   printf("home screen\r\n");
   
-};
+// };
 
-void setting_screen(void){
-  printf("setting manu\r\n");
+// void setting_screen(void){
+//   printf("setting manu\r\n");
   
-};
+// };
 
 void SystemClock_Config(void);
-extern void MX_GPIO_Init(void);
-extern void MX_USART2_UART_Init(void);
-extern void MX_TIM2_Init(void);
-void LCD_init(void);
+
 
 
 
@@ -79,20 +71,21 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   spi_init();
-  test_lcd();
+  lcd_init();
+  
   while (1)
   {
     /* USER CODE END WHILE */
       if(lcdmode==LCD_mode_0){
-      
+      Paint_Clear(WHITE);
        welcome_screen();
       }
       if(lcdmode==LCD_mode_1){
-    
+      // Paint_Clear(WHITE);
        home_screen();
       }
       if(lcdmode==LCD_mode_2){
- 
+       Paint_Clear(WHITE);
        setting_screen();
       }
     HAL_Delay(1000);

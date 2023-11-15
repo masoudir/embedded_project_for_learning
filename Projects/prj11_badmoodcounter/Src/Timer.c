@@ -11,7 +11,7 @@ int16_t badmoodcount = 0;
 extern int mytime;
 extern int array[7];
 extern LCD_mode lcdmode;
-
+uint8_t hours = 0, minutes = 0, seconds = 0;
 
 void MX_TIM2_Init(void)
 {
@@ -153,7 +153,7 @@ void MX_TIM3_Init(void)
 }
 
 void TIM3_IRQHandler(void)
-{ static uint8_t hours = 0, minutes = 0, seconds = 0;
+{
  
   HAL_TIM_IRQHandler(&htim3);// timer 1s
       //  system("clear"); 

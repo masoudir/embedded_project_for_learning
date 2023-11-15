@@ -27,7 +27,7 @@ void LCD_2in4_test()
 	//Paint_SetRotate(ROTATE_0);
 	//Paint_DrawString_EN (5, 10, "DEMO:",        &Font24,    YELLOW,  RED);
 
-/*******************************LCD_mode_0********************************************/
+/*******************************welcome_screen********************************************/
 
 	Paint_DrawString_EN (5, 34, "Hello", &Font20,WHITE,BLUE);
     Paint_DrawString_EN (5, 64, "Welcome to", &Font20,WHITE,BLUE);
@@ -37,7 +37,7 @@ void LCD_2in4_test()
 
 
 
-/*******************************LCD_mode_1********************************************/
+/*******************************home_screen********************************************/
 
     // Paint_DrawString_EN (5, 10, "Date", &Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 40, "Current", &Font20,WHITE,BLUE);
@@ -58,7 +58,7 @@ void LCD_2in4_test()
 
 
 
-/*******************************LCD_mode_2********************************************/
+/*******************************setting_screen********************************************/
   //Paint_DrawString_EN (70, 34, "SETTING", &Font20,WHITE,BLUE);
 
 
