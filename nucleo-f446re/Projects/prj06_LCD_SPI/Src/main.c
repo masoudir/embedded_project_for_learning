@@ -93,15 +93,8 @@ int main(void)
   MX_SPI2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  //  ST7735_Init(0);
- /*  fillScreen(WHITE);
-  ST7735_SetRotation(0);
-  ST7735_FillRectangle(8, 9, 112, 112, RED);
-  ST7735_WriteString(20, 40, "RIRA", Font_11x18, BLUE, YELLOW);
-  ST7735_WriteString(20, 58, "FARYA", Font_11x18, BLUE, YELLOW); */
-  ST7735_FillScreen(BLUE);
- //// testAll(); 
-
+    ST7735_Init(0);
+    
 
   /* USER CODE END 2 */
 
@@ -110,7 +103,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+        testAll();
+       
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
