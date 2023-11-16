@@ -81,7 +81,7 @@ int main(void)
        welcome_screen();
       }
       if(lcdmode==LCD_mode_1){
-      // Paint_Clear(WHITE);
+       Paint_Clear(WHITE);
        home_screen();
       }
       if(lcdmode==LCD_mode_2){

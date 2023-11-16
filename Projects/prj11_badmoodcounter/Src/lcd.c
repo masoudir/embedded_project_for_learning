@@ -71,6 +71,7 @@ void home_screen(){
 
        print_badmoodcount_lcd (badmoodcount);
     
+    
     // // extracting year, month, date from the time_buffer
     // int year, month, day;
 
@@ -97,14 +98,14 @@ void home_screen(){
 
     Paint_DrawString_EN (5, 40, "Current", &Font20,WHITE,BLUE);
     //Paint_DrawString_EN (190, 60, "99",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 100,"7-day record",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 120,"date1:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 140,"date2:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 160,"date3:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 180,"date4:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 200,"date5:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 220,"date6:",&Font20,WHITE,BLUE);
-    Paint_DrawString_EN (5, 240,"date7:",&Font20,WHITE,BLUE);
+    //Paint_DrawString_EN (5, 100,"7-day record",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 120,"date1:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 140,"date2:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 160,"date3:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 180,"date4:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 200,"date5:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 220,"date6:",&Font20,WHITE,BLUE);
+    // Paint_DrawString_EN (5, 240,"date7:",&Font20,WHITE,BLUE);
     DEV_Delay_ms(50000);
   
 }
@@ -129,17 +130,17 @@ void print_time_UART_lcd (uint8_t hours,uint8_t minutes,uint8_t seconds){
 
 void print_badmoodcount_lcd (int16_t badmoodcount){
     char badmoodcount_buffer[20]={0};
-    LCD_clear_line(60,&Font20, WHITE);
+    //LCD_clear_line(60, WHITE);
     sprintf(badmoodcount_buffer,"%d", badmoodcount);
     printf("Badmoodcount:%s", badmoodcount_buffer);
     Paint_DrawString_EN (0, 60,badmoodcount_buffer, &Font20,WHITE,BLUE);
 }
 
 void LCD_clear_line(uint16_t line_number, sFONT* font_size, UWORD Color)
+
 {
     UWORD i,j;
     LCD_2IN4_SetWindow(0, line_number, 0 + LCD_2IN4_WIDTH, line_number + font_size->Height);
-
 	DEV_Digital_Write(DEV_DC_PIN, 1);
 	for(i = 0; i < LCD_2IN4_WIDTH; i++){
 		for(j = 0; j < font_size->Height; j++){

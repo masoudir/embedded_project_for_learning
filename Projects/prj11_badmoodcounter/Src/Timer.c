@@ -11,7 +11,7 @@ int16_t badmoodcount = 0;
 extern int mytime;
 extern int array[7];
 extern LCD_mode lcdmode;
-uint8_t hours = 0, minutes = 0, seconds = 0;
+ uint8_t hours = 0, minutes = 0, seconds = 0;
 
 void MX_TIM2_Init(void)
 {
@@ -218,7 +218,7 @@ void TIM2_IRQHandler(void)
   if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    printf("icrease badmood=%d\r\n", badmoodcount);
+    printf("increase badmood=%d\r\n", badmoodcount);
   }
 
   if((HAL_GPIO_ReadPin(SETTING_BUTTON_PORT,SETTING_BUTTON) == GPIO_PIN_RESET)){
