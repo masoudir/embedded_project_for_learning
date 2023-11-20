@@ -44,9 +44,26 @@ uint8_t rxData[4];
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi3;
-
+TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
+void TIM2_IRQHandler(void)
+{
+  HAL_TIM_IRQHandler(&htim2);
+  //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
+    /* HAL_SPI_Transmit(&hspi2, txData, 4, HAL_MAX_DELAY);
+     printf("transmit data: %02X %02X %02X %02X\n\r", txData[0], txData[1], txData[2], txData[3]);
+ */
+}
+
+void SPI3_IRQHandler(void)
+{
+
+  
+  HAL_SPI_IRQHandler(&hspi3);
+  HAL_SPI_Receive_IT(&hspi3, rxData, 4);
+  printf("Received data: %02X %02X %02X %02X\n\r", rxData[0], rxData[1], rxData[2], rxData[3]);
+}
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -57,6 +74,7 @@ static void MX_GPIO_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -98,8 +116,9 @@ int main(void)
   MX_USART2_UART_Init();
   RetargetInit(&huart2);
   MX_SPI3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+ HAL_SPI_Receive_IT(&hspi3, rxData, 4);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,13 +127,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-      HAL_SPI_Transmit(&hspi2, txData, sizeof(txData), HAL_MAX_DELAY);
-
-     if (HAL_SPI_Receive(&hspi3, rxData, sizeof(rxData),100) == HAL_OK) {
-       
-       printf("Received data: %02X %02X %02X %02X\n", rxData[0], rxData[1], rxData[2], rxData[3]);
-    }
-     Error_Handler();
+     
+      //HAL_Delay(10);
+    //if (HAL_SPI_Receive(&hspi3, rxData, 4, 500) == HAL_OK) {
+   HAL_SPI_Transmit(&hspi2, txData, 4, HAL_MAX_DELAY);
+   while(HAL_SPI_GetState(&hspi2)!= HAL_SPI_STATE_READY);
+   
+    /* code */
+     
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -190,7 +210,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler =SPI_BAUDRATEPRESCALER_256;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -241,7 +261,73 @@ static void MX_SPI3_Init(void)
   /* USER CODE END SPI3_Init 2 */
 
 }
+static void MX_TIM2_Init(void)
+{
 
+  /* 
+        Enable clock to Timer-2 
+        
+        NOTE: This is lagacy Macro. The better approach is the
+        use of HAL_TIM_ConfigClockSource function.
+    */
+    __HAL_RCC_TIM2_CLK_ENABLE();
+    
+    /*
+        From STM32F407 datasheet, Timer2 is clocked from
+        APB1 bus (42Mhz max). In default configuration
+        Timer-2 is receiving 16Mhz (HSI) bus clock.
+    */        
+    
+    /***************************************************
+                   Timer-2 Configuration:
+    ****************************************************/
+    
+    /* Select Timer-2 for further configuration */
+    htim2.Instance = TIM2;
+    
+    /*
+        Divide the timer-2 input frequency (16Mhz)
+        by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
+    */
+    htim2.Init.Prescaler   = 1000;
+    
+    #if (UP_COUNTER)
+     /* Up-Counter mode*/
+     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+    #else 
+      htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
+    #endif
+
+    /*
+        We want the time count to be 500msec (half a second).
+        As the input frequency is 16khz so the total
+        counts required for 500msec delay:
+        
+        total counts = 500msec * f
+                     = (.5 sec) * 16,000
+                     = 8,000
+                     = 0x1F40
+    */
+    htim2.Init.Period = 8000;
+        
+    /*
+        Finally initialize Timer-2
+    */
+    while (HAL_TIM_Base_Init(&htim2)!= HAL_OK);
+
+    /*
+        Enable timer-2 IRQ interrupt
+    */
+    HAL_TIM_Base_Start_IT(&htim2);
+
+    /* Enable interrupt at IRQ-Level */
+    HAL_NVIC_EnableIRQ(TIM2_IRQn);
+    
+    /*
+        Start the timer
+    */
+    HAL_TIM_Base_Start(&htim2);
+}
 /**
   * @brief USART2 Initialization Function
   * @param None
