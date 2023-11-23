@@ -94,6 +94,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  RetargetInit(&huart2);
   MX_RTC_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
@@ -107,9 +108,11 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
+     HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
   
- sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
+        sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
+         printf("%s\n\r",buff);
+         HAL_Delay(10);
          HD44780_SetCursor(0,0);
            HD44780_PrintStr(buff); 
     /* USER CODE BEGIN 3 */
@@ -134,7 +137,7 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -240,8 +243,8 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 0x1;
-  sTime.Minutes = 0x0;
+  sTime.Hours = 0x11;
+  sTime.Minutes = 0x11;
   sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
@@ -273,9 +276,9 @@ static void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN RTC_Init 2 */
 
-  /* USER CODE END RTC_Init 2 */
+ 
+ 
 
 }
 
