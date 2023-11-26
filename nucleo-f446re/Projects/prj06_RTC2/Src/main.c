@@ -36,6 +36,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 char buff[16];
+char buff2[16];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -46,7 +47,7 @@ RTC_HandleTypeDef hrtc;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-RTC_TimeTypeDef sTime;
+RTC_TimeTypeDef gTime;
 RTC_DateTypeDef  sDate;
 /* USER CODE END PV */
 
@@ -108,13 +109,21 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-     HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
+    // HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
   
-        sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
+        /* sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
          printf("%s\n\r",buff);
          HAL_Delay(10);
          HD44780_SetCursor(0,0);
-           HD44780_PrintStr(buff); 
+           HD44780_PrintStr(buff);  */
+           HAL_RTC_GetTime(&hrtc , &gTime , RTC_FORMAT_BIN);
+     sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
+              HD44780_SetCursor(0,0);
+                HD44780_PrintStr(buff);
+               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
+                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
+                            HD44780_SetCursor(0,1);
+                              HD44780_PrintStr(buff2);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
