@@ -199,7 +199,7 @@ void TIM2_IRQHandler(void)
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"tick2", 5, 100);
   count0++;
   if(count0<30){
-    lcdmode=LCD_mode_0;
+    //lcdmode=LCD_mode_0;
   }
 
   if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_0)){
@@ -224,7 +224,7 @@ void TIM2_IRQHandler(void)
   if((HAL_GPIO_ReadPin(SETTING_BUTTON_PORT,SETTING_BUTTON) == GPIO_PIN_RESET)){
     lcdmode=LCD_mode_2;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
-    //printf("lcdmode=%d\n", lcdmode);
+    printf("setting screen in main \r\n");
   }
 
   if((HAL_GPIO_ReadPin(RETURN_BUTTON_PORT,RETURN_BUTTON) == GPIO_PIN_RESET)){
@@ -232,7 +232,7 @@ void TIM2_IRQHandler(void)
              lcdmode=LCD_mode_1;
          }
         
-         if (lcdmode==LCD_mode_1){
+         else if (lcdmode==LCD_mode_1){
              lcdmode=LCD_mode_0;
          }
 

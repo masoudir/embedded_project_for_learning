@@ -158,7 +158,7 @@ void welcome_screen_for_UART(){
 
 void home_screen_for_UART() {
     if(lcdmode==LCD_mode_1) {
-        printf("current time \r\n");
+        printf(" home screen current time \r\n");
         printf("Badmoodcounter now:%d \r\n", badmoodcount);
         for(int i=0; i<7;i++) {
           printf("The %d of 7days record %d\r\n", i, array[i]);
