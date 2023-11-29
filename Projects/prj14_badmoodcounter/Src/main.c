@@ -92,6 +92,7 @@ int main(void)
        setting_screen_for_UART();
       }
     HAL_Delay(1000);
+     printf("-----------------------------------------------------------\r\n");
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

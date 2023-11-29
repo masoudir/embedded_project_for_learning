@@ -171,7 +171,7 @@ void TIM3_IRQHandler(void)
         }
 
       
-        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
+        //printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
         
   mytime++;
   array[0]=badmoodcount;
@@ -179,18 +179,18 @@ void TIM3_IRQHandler(void)
       for (int j = 5; j >= 0; j--) {
         array[j+1] = array[j];
       }; 
-      printf("badmood reset \r\n ");
+     // printf("badmood reset \r\n ");
       badmoodcount=0;
       array[0]=0;
       mytime=0;
   }
   // Display the latest 7 interval numbers
-        printf("Latest 7 numbers: ");
-        for (int j = 0; j < 7; j++) {
-            printf("%d ", array[j]);
-        }
-        printf("\r\n");
-      printf("----------------------------\r\n");
+        //printf("Latest 7 numbers: ");
+        //for (int j = 0; j < 7; j++) {
+            //printf("%d ", array[j]);
+        //}
+       // printf("\r\n");
+      //printf("----------------------------\r\n");
 }
 
 void TIM2_IRQHandler(void)
@@ -212,19 +212,19 @@ void TIM2_IRQHandler(void)
   if((HAL_GPIO_ReadPin(UP_BUTTON_PORT,UP_BUTTON) == GPIO_PIN_RESET)&&(badmoodcount!=0)){
     badmoodcount--;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    printf("decrease badmood=%d\r\n", badmoodcount);
+    //printf("decrease badmood=%d\r\n", badmoodcount);
   }
   
   if((HAL_GPIO_ReadPin(DOWN_BUTTON_PORT,DOWN_BUTTON) == GPIO_PIN_RESET)&&(lcdmode==LCD_mode_1)){
     badmoodcount++;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) badmoodcount, 5, 100); 
-    printf("increase badmood=%d\r\n", badmoodcount);
+    //printf("increase badmood=%d\r\n", badmoodcount);
   }
 
   if((HAL_GPIO_ReadPin(SETTING_BUTTON_PORT,SETTING_BUTTON) == GPIO_PIN_RESET)){
     lcdmode=LCD_mode_2;
     //HAL_UART_Transmit(&huart2, (const uint8_t*) lcdmode, 5, 100); 
-    printf("setting screen in main \r\n");
+    //printf("setting screen in main \r\n");
   }
 
   if((HAL_GPIO_ReadPin(RETURN_BUTTON_PORT,RETURN_BUTTON) == GPIO_PIN_RESET)){

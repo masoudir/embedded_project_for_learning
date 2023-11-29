@@ -152,7 +152,7 @@ void LCD_clear_line(uint16_t line_number, sFONT* font_size, UWORD Color)
 /***************************************************************************/
 void welcome_screen_for_UART(){
     if(lcdmode==LCD_mode_0){
-        printf("hi, welcome to badmoodcounter, please press key2 to continue");
+        printf("hi, welcome to badmoodcounter, please press key2 to continue\r\n");
     } 
 }
 
@@ -160,6 +160,7 @@ void home_screen_for_UART() {
     if(lcdmode==LCD_mode_1) {
         printf(" home screen current time \r\n");
         printf("Badmoodcounter now:%d \r\n", badmoodcount);
+        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
         for(int i=0; i<7;i++) {
           printf("The %d of 7days record %d\r\n", i, array[i]);
         }
@@ -174,3 +175,5 @@ void setting_screen_for_UART(){
         printf("This is setting screen\r\n");
     } 
 }
+
+
