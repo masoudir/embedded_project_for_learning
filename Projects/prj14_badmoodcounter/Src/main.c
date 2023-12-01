@@ -77,18 +77,18 @@ int main(void)
   {
     /* USER CODE END WHILE */
       if(lcdmode==LCD_mode_0){
-      //Paint_Clear(WHITE);
-      //lcd_welcome_screen();
+      Paint_Clear(WHITE);
+      lcd_welcome_screen();
       welcome_screen_for_UART();
       }
       if(lcdmode==LCD_mode_1){
-       //Paint_Clear(WHITE);
-       //lcd_home_screen();
+       Paint_Clear(WHITE);
+       lcd_home_screen();
        home_screen_for_UART();
       }
       if(lcdmode==LCD_mode_2){
-      // Paint_Clear(WHITE);
-       //lcd_setting_screen();
+      Paint_Clear(WHITE);
+      lcd_setting_screen();
        setting_screen_for_UART();
       }
     HAL_Delay(1000);
