@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "liquidcrystal_i2c.h"
+
 /* USER CODE END Includes */
 #include <stdio.h>
 /* Private typedef -----------------------------------------------------------*/
@@ -38,7 +38,7 @@
 char buff[16];
 char buff2[16];
 char alarme[16];
-int count;
+int count = 0;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -46,7 +46,7 @@ I2C_HandleTypeDef hi2c1;
 
 RTC_HandleTypeDef hrtc;
 
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef hTIM3;
 
 UART_HandleTypeDef huart2;
 
@@ -61,7 +61,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_RTC_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_TIM2_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,11 +102,11 @@ int main(void)
   MX_USART2_UART_Init();
   RetargetInit(&huart2);
   MX_RTC_Init();
-    MX_TIM2_Init();
+  MX_TIM3_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
-     HD44780_Clear();
+   HD44780_Clear();
        
   /* USER CODE END 2 */
 
@@ -126,7 +126,7 @@ int main(void)
      sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
               HD44780_SetCursor(0,0);
                 HD44780_PrintStr(buff);
-               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
+               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN); 
                    //sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
                             //HD44780_SetCursor(0,1);
                              // HD44780_PrintStr(alarm);
@@ -302,7 +302,7 @@ static void MX_RTC_Init(void)
 }
   
   
-static void MX_TIM2_Init(void)
+static void MX_TIM3_Init(void)
 {
 
   /* 
@@ -311,7 +311,7 @@ static void MX_TIM2_Init(void)
         NOTE: This is lagacy Macro. The better approach is the
         use of HAL_TIM_ConfigClockSource function.
     */
-    __HAL_RCC_TIM2_CLK_ENABLE();
+    __HAL_RCC_TIM3_CLK_ENABLE();
     
     /*
         From STM32F407 datasheet, Timer2 is clocked from
@@ -324,19 +324,19 @@ static void MX_TIM2_Init(void)
     ****************************************************/
     
     /* Select Timer-2 for further configuration */
-    htim2.Instance = TIM2;
+    hTIM3.Instance = TIM3;
     
     /*
         Divide the timer-2 input frequency (16Mhz)
         by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
     */
-    htim2.Init.Prescaler   = 2000;
+    hTIM3.Init.Prescaler   = 2000;
     
     #if (UP_COUNTER)
      /* Up-Counter mode*/
      htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
     #else 
-      htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
+      hTIM3.Init.CounterMode = TIM_COUNTERMODE_DOWN;        
     #endif
 
     /*
@@ -349,25 +349,25 @@ static void MX_TIM2_Init(void)
                      = 8,000
                      = 0x1F40
     */
-    htim2.Init.Period = 800;
+    hTIM3.Init.Period = 800;
         
     /*
         Finally initialize Timer-2
     */
-    while (HAL_TIM_Base_Init(&htim2)!= HAL_OK);
+    while (HAL_TIM_Base_Init(&hTIM3)!= HAL_OK);
 
     /*
         Enable timer-2 IRQ interrupt
     */
-    HAL_TIM_Base_Start_IT(&htim2);
+    HAL_TIM_Base_Start_IT(&hTIM3);
 
     /* Enable interrupt at IRQ-Level */
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
+    HAL_NVIC_EnableIRQ(TIM3_IRQn);
     
     /*
         Start the timer
     */
-    HAL_TIM_Base_Start(&htim2);
+    HAL_TIM_Base_Start(&hTIM3);
 }
 
 
