@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
-int count;
+extern int count;
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -56,7 +56,7 @@ int count;
 
 /* External variables --------------------------------------------------------*/
 extern RTC_HandleTypeDef hrtc;
-extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef hTIM3;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
@@ -217,9 +217,9 @@ void TAMP_STAMP_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-void TIM2_IRQHandler(void)
+void TIM3_IRQHandler(void)
 {
-  HAL_TIM_IRQHandler(&htim2);
+  HAL_TIM_IRQHandler(&hTIM3);
   //HAL_UART_Transmit(&huart2, (const uint8_t*)"hey", 3, 100);
   //if(HAL_GPIO_ReadPin(B1_GPIO_Port,B1_Pin) == GPIO_PIN_RESET){
     count++;
