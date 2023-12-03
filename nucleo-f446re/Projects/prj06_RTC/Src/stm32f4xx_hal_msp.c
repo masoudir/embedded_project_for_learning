@@ -163,7 +163,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef* hrtc)
   /** Initializes the peripherals clock
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();
@@ -172,8 +172,8 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef* hrtc)
     /* Peripheral clock enable */
     __HAL_RCC_RTC_ENABLE();
     /* RTC interrupt Init */
-    HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
+    HAL_NVIC_SetPriority(TAMP_STAMP_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(TAMP_STAMP_IRQn);
   /* USER CODE BEGIN RTC_MspInit 1 */
 
   /* USER CODE END RTC_MspInit 1 */
@@ -198,7 +198,7 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef* hrtc)
     __HAL_RCC_RTC_DISABLE();
 
     /* RTC interrupt DeInit */
-    HAL_NVIC_DisableIRQ(RTC_Alarm_IRQn);
+    HAL_NVIC_DisableIRQ(TAMP_STAMP_IRQn);
   /* USER CODE BEGIN RTC_MspDeInit 1 */
 
   /* USER CODE END RTC_MspDeInit 1 */

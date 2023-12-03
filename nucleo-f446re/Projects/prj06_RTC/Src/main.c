@@ -18,12 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stdio.h>
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-char buff[16];
+#include "liquidcrystal_i2c.h"
 /* USER CODE END Includes */
-
+#include <stdio.h>
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
@@ -31,12 +31,12 @@ char buff[16];
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+char buff[16];
+char buff2[16];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -45,17 +45,18 @@ I2C_HandleTypeDef hi2c1;
 RTC_HandleTypeDef hrtc;
 
 UART_HandleTypeDef huart2;
-RTC_TimeTypeDef sTime;
-/* USER CODE BEGIN PV */
 
+/* USER CODE BEGIN PV */
+RTC_TimeTypeDef gTime;
+RTC_DateTypeDef  sDate;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_I2C1_Init(void);
-static void MX_RTC_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_RTC_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -93,20 +94,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
-  MX_RTC_Init();
   MX_USART2_UART_Init();
-   RetargetInit(&huart2);
+  RetargetInit(&huart2);
+  MX_RTC_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
-  HD44780_Clear();
-  HD44780_SetCursor(0,0);
-  HD44780_PrintStr("HELLO");
-  HD44780_Blink();
-  HD44780_SetCursor(7,1);
-  HD44780_PrintStr("world");
-  HAL_Delay(1000);
-
+     HD44780_Clear();
+       
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,13 +109,21 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
- HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
+    // HAL_RTC_GetTime(&hrtc, &sTime , RTC_FORMAT_BIN);
   
-        sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
+        /* sprintf (buff,"%2.2d:%2.2d:%2.2d",sTime.Hours,sTime.Minutes,sTime.Seconds);
          printf("%s\n\r",buff);
          HAL_Delay(10);
          HD44780_SetCursor(0,0);
-           HD44780_PrintStr(buff); 
+           HD44780_PrintStr(buff);  */
+           HAL_RTC_GetTime(&hrtc , &gTime , RTC_FORMAT_BIN);
+     sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
+              HD44780_SetCursor(0,0);
+                HD44780_PrintStr(buff);
+               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
+                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
+                            HD44780_SetCursor(0,1);
+                              HD44780_PrintStr(buff2);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -143,7 +146,7 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -223,7 +226,7 @@ static void MX_RTC_Init(void)
 
   RTC_TimeTypeDef sTime = {0};
   RTC_DateTypeDef sDate = {0};
-  RTC_AlarmTypeDef sAlarm = {0};
+  RTC_TamperTypeDef sTamper = {0};
 
   /* USER CODE BEGIN RTC_Init 1 */
 
@@ -232,7 +235,7 @@ static void MX_RTC_Init(void)
   /** Initialize RTC Only
   */
   hrtc.Instance = RTC;
-  hrtc.Init.HourFormat = RTC_HOURFORMAT_12;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
   hrtc.Init.AsynchPrediv = 127;
   hrtc.Init.SynchPrediv = 255;
   hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
@@ -249,47 +252,42 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 11;
-  sTime.Minutes = 10;
-  sTime.Seconds = 0;
-  sTime.TimeFormat = RTC_HOURFORMAT12_AM;
+  sTime.Hours = 0x11;
+  sTime.Minutes = 0x11;
+  sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
   {
     Error_Handler();
   }
   sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-  sDate.Month = RTC_MONTH_NOVEMBER;
-  sDate.Date = 21;
-  sDate.Year = 0;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 0x1;
+  sDate.Year = 0x0;
 
-  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
   {
     Error_Handler();
   }
 
-  /** Enable the Alarm A
+  /** Enable the RTC Tamper 2
   */
-  sAlarm.AlarmTime.Hours = 11;
-  sAlarm.AlarmTime.Minutes = 11;
-  sAlarm.AlarmTime.Seconds = 0;
-  sAlarm.AlarmTime.SubSeconds = 0;
-  sAlarm.AlarmTime.TimeFormat = RTC_HOURFORMAT12_AM;
-  sAlarm.AlarmTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-  sAlarm.AlarmTime.StoreOperation = RTC_STOREOPERATION_RESET;
-  sAlarm.AlarmMask = RTC_ALARMMASK_NONE;
-  sAlarm.AlarmSubSecondMask = RTC_ALARMSUBSECONDMASK_ALL;
-  sAlarm.AlarmDateWeekDaySel = RTC_ALARMDATEWEEKDAYSEL_DATE;
-  sAlarm.AlarmDateWeekDay = 1;
-  sAlarm.Alarm = RTC_ALARM_A;
-  if (HAL_RTC_SetAlarm_IT(&hrtc, &sAlarm, RTC_FORMAT_BIN) != HAL_OK)
+  sTamper.Tamper = RTC_TAMPER_2;
+  sTamper.PinSelection = RTC_TAMPERPIN_POS1;
+  sTamper.Trigger = RTC_TAMPERTRIGGER_RISINGEDGE;
+  sTamper.Filter = RTC_TAMPERFILTER_DISABLE;
+  sTamper.SamplingFrequency = RTC_TAMPERSAMPLINGFREQ_RTCCLK_DIV32768;
+  sTamper.PrechargeDuration = RTC_TAMPERPRECHARGEDURATION_1RTCCLK;
+  sTamper.TamperPullUp = RTC_TAMPER_PULLUP_ENABLE;
+  sTamper.TimeStampOnTamperDetection = RTC_TIMESTAMPONTAMPERDETECTION_ENABLE;
+  if (HAL_RTCEx_SetTamper_IT(&hrtc, &sTamper) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN RTC_Init 2 */
 
-  /* USER CODE END RTC_Init 2 */
+ 
+ 
 
 }
 
@@ -334,8 +332,6 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -359,8 +355,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

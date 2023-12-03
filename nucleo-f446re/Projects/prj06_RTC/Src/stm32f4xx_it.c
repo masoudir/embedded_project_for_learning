@@ -199,17 +199,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles RTC alarms A and B interrupt through EXTI line 17.
+  * @brief This function handles RTC tamper and timestamp interrupts through EXTI line 21.
   */
-void RTC_Alarm_IRQHandler(void)
+void TAMP_STAMP_IRQHandler(void)
 {
-  /* USER CODE BEGIN RTC_Alarm_IRQn 0 */
+  /* USER CODE BEGIN TAMP_STAMP_IRQn 0 */
 
-  /* USER CODE END RTC_Alarm_IRQn 0 */
-  HAL_RTC_AlarmIRQHandler(&hrtc);
-  /* USER CODE BEGIN RTC_Alarm_IRQn 1 */
+  /* USER CODE END TAMP_STAMP_IRQn 0 */
+  HAL_RTCEx_TamperTimeStampIRQHandler(&hrtc);
+  /* USER CODE BEGIN TAMP_STAMP_IRQn 1 */
 
-  /* USER CODE END RTC_Alarm_IRQn 1 */
+  /* USER CODE END TAMP_STAMP_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
