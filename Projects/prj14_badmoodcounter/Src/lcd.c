@@ -48,10 +48,24 @@ void lcd_welcome_screen(){
 void lcd_home_screen(){
     char badmoodcount_buffer[20];
     sprintf(badmoodcount_buffer,"%d", badmoodcount);
-    Paint_DrawString_EN (5, 40, badmoodcount_buffer, &Font20,WHITE,BLUE);
+    Paint_DrawString_EN (150, 40, badmoodcount_buffer, &Font20,WHITE,BLUE);
    
     //Paint_DrawString_EN (190, 60, "99",&Font20,WHITE,BLUE);
     Paint_DrawString_EN (5, 100,"7-day record",&Font20,WHITE,BLUE);
+    
+    for (int i = 0; i < 7; ++i) {
+        char array_buffer[5]; // Buffer for each element as string
+        sprintf(array_buffer, "%d", array[i]); // Convert int to char array
+        // Display the current array element on the LCD
+        Paint_DrawString_EN(160, 140 + i * 20, array_buffer, &Font20, WHITE, BLUE);
+        Paint_DrawString_EN(5, 140 + i * 20, "Date", &Font20, WHITE, BLUE);
+
+        }
+
+    
+ 
+
+    //Paint_DrawString_EN (5, 140,array_buffer,&Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 120,"date1:",&Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 140,"date2:",&Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 160,"date3:",&Font20,WHITE,BLUE);
@@ -59,7 +73,7 @@ void lcd_home_screen(){
     // Paint_DrawString_EN (5, 200,"date5:",&Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 220,"date6:",&Font20,WHITE,BLUE);
     // Paint_DrawString_EN (5, 240,"date7:",&Font20,WHITE,BLUE);
-    DEV_Delay_ms(1000);
+    DEV_Delay_ms(100);
   
 }
 
@@ -117,12 +131,6 @@ void home_screen_for_UART() {
         for(int i=0; i<7;i++) {
           printf("The %d of 7days record %d\r\n", i, array[i]);
         }
-       
-
-
-
-
-
 
     } 
 }
