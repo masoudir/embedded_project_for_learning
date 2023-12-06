@@ -13,7 +13,7 @@
 #include "stm32f4xx_hal.h"
 #include"stm32f4xx_hal_spi.h"
 #include <stdbool.h>
-
+void MX_RTC_Init(void);
 void welcome_screen(void);
 void home_screen(void);
 void setting_screen(void);
