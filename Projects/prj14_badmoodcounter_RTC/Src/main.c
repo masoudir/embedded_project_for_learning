@@ -182,6 +182,8 @@ void MX_RTC_Init(void)
 
   /* USER CODE END RTC_Init 1 */
 
+  printf("P1 ");
+
   /** Initialize RTC Only
   */
   hrtc.Instance = RTC;
@@ -195,7 +197,7 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-
+  printf("P2 ");
   /* USER CODE BEGIN Check_RTC_BKUP */
 
   /* USER CODE END Check_RTC_BKUP */
@@ -211,6 +213,7 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
+  printf("P3 ");
   sDate.WeekDay = RTC_WEEKDAY_MONDAY;
   sDate.Month = RTC_MONTH_JANUARY;
   sDate.Date = 0x1;
@@ -235,7 +238,7 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-
+  printf("P4 ");
  
 }
 
