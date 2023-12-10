@@ -30,4 +30,8 @@ BMP180 module datasheet:
 1. Clone the repository
 2. Open the project in your preferred IDE
 3. Compile and upload the code to the NUCLEO_F446RE microcontroller
-    
+
+### Images
+
+ ![image](/home/farya/Pictures/photo_2023-12-09_17-49-07.jpg)
+ ![image](/home/farya/Pictures/photo_2023-12-09_17-48-42.jpg)  
