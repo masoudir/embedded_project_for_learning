@@ -210,10 +210,19 @@ void TIM3_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim3);
 
 
-     if(temperature / 10 >= 23){
+  if(temperature / 10 >= 24){
       active_fan = 1;
+      
+     } 
+    else{
+      active_fan = 0;
+     }
+/* 
+  if(temperature / 10 <= 19){
+      active_fan = 0;
+       decrease_fan_speed_gradually();
      } 
      else{
-      active_fan =0;
-     }
+      active_fan =1;
+     } */
 }

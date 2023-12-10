@@ -1,4 +1,5 @@
-##Temperature Controlled with DC Fan using stm32 NUCLEO_F446RE.
+# Temperature Controlled with DC Fan using stm32 NUCLEO_F446RE.
+
 This project  the idea of controlling the fan based on the variation of temperature. Through this project we intended:
 
 1. To build a system to detect temperature of the room and execute the contrast of the current temperature.
@@ -10,18 +11,27 @@ Temperature controlling is required in many places such as server rooms, houses,
 
 ## Components used :
 
-    ~ STM32F446RE Microcontroller
-    ~ BMP180 module - pressure and temperature sensor
-    ~ 5V DC Fan
-    ~ I2C Serial Interface 1602 (16x2 LCD display module)
+  * STM32F446RE Microcontroller
+  * BMP180 module - pressure and temperature sensor
+  * 5V DC Fan
+  * I2C Serial Interface 1602 (16x2 LCD display module)
 
 
-##datasheet
+  ## datasheet
 
 BMP180 module datasheet: 
  [link](https://cdn-shop.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf).
 
-  ## Installation
+## Requirements
+
+* CMake (for linux users : sudo apt install cmake)
+* Make 
+* gcc-arm-none-eabi
+* openOCD
+* GDB
+
+
+ ## Installation
  To install the project, follow these steps:
 
 1. Clone the repository

@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
 #include "stm32f4xx_hal.h"
 #include "bmp180_for_stm32_hal.h"
 #include "liquidcrystal_i2c.h"
@@ -57,7 +58,8 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-
+void increase_fan_speed_gradually();
+void decrease_fan_speed_gradually();
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

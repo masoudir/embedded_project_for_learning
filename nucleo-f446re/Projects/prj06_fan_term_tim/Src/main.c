@@ -66,7 +66,50 @@ static void MX_I2C2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void increase_fan_speed_gradually(){
+      int x;
+      bool is_process_finished = false;
 
+  while (active_fan ==1 && !is_process_finished)
+  {
+  
+   // HD44780_SetCursor(7,1);
+   // HD44780_PrintStr("on  ");
+    
+    for (x=0; x>625; x++){
+
+      __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+        HAL_Delay(1);
+
+     if(active_fan == 0) break;
+    }
+       is_process_finished = true;
+  }
+}
+
+/* void decrease_fan_speed_gradually(){
+    int x;
+    bool is_process_finished = false;
+
+while (active_fan ==1 && !is_process_finished)
+{
+
+  HD44780_SetCursor(7,1);
+  HD44780_PrintStr("on  ");
+  
+  for (x=625; x>=0; x--){
+
+    __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+      HAL_Delay(1);
+
+      if(active_fan == 0){
+      break;
+      }
+  
+  }
+      is_process_finished = true;
+  }
+} */
 /* USER CODE END 0 */
 
 /**
@@ -126,34 +169,17 @@ int main(void)
     HD44780_PrintStr("fan:");
     HD44780_SetCursor(7, 1);
     HD44780_PrintStr("off");
-      HAL_Delay(1000);
+    HAL_Delay(1000);
 
-      temperature = BMP180_GetRawTemperature();
-  
-   sprintf(buffer, "%d.%d C    \n\r", (int) temperature / 10, (int) temperature % 10);
-   HAL_UART_Transmit(&huart2, (uint8_t*)&buffer, strlen(buffer), 1000);
+    temperature = BMP180_GetRawTemperature(); 
+    sprintf(buffer, "%d.%d C    \n\r", (int) temperature / 10, (int) temperature % 10);
+    HAL_UART_Transmit(&huart2, (uint8_t*)&buffer, strlen(buffer), 1000);
+
      HD44780_SetCursor(7,0);
      HD44780_PrintStr(buffer);
-      HAL_Delay(1000);
-
-     if( active_fan ==1){
-
-       HD44780_SetCursor(7,1);
-       HD44780_PrintStr("on  ");
-         int x;
-       for (x=0; x<625; x++){
-         __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-         HAL_Delay(1);
-           }
-        for (x=625; x>0 ; x--){
-         __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-         HAL_Delay(1); 
+     HAL_Delay(1000);
+      increase_fan_speed_gradually();
      }
-
-      }
-     }
-
-  /* USER CODE BEGIN 3 */
 }
 /* USER CODE END 3 */
 
