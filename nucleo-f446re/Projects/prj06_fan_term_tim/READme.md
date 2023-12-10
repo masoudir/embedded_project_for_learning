@@ -1,6 +1,9 @@
 ##Temperature Controlled with DC Fan using stm32 NUCLEO_F446RE.
 This project  the idea of controlling the fan based on the variation of temperature. Through this project we intended:
 
+![my image](image.png)
+
+
 1. To build a system to detect temperature of the room and execute the contrast of the current temperature.
 2. Making a system that does not allow the room temperature to rise above a certain limit.
 3. To erect a time-saving and use worthy set-up.
