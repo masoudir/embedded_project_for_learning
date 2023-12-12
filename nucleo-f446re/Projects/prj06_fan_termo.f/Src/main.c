@@ -59,6 +59,37 @@ static void MX_I2C2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
+/* void increase_fan_speed_gradually(){
+      int x;
+      bool is_process_finished = false;
+
+  while (!is_process_finished)
+  {
+  
+   // HD44780_SetCursor(7,1);
+   // HD44780_PrintStr("on  ");
+    
+    for (x=0; x>625; x++){
+
+      __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+        HAL_Delay(1);
+
+    // if(active_fan == 0) break;
+    }
+       is_process_finished = true;
+  }
+}
+
+void decrease_fan_speed_gradually(){
+    int x;
+  for (x=625; x>=0; x--){
+
+    __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+      HAL_Delay(1);
+    
+      }
+  } */
+   
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -105,7 +136,7 @@ int main(void)
   HD44780_Init(2);
   HD44780_Clear();
   HD44780_SetCursor(1,0);
-  HD44780_PrintStr("Fan active:+26");
+  HD44780_PrintStr("Fan active:+23");
   HAL_Delay(1000);
   HD44780_Clear();
   /* USER CODE END 2 */
@@ -114,47 +145,67 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-     HD44780_Clear();
-     HD44780_SetCursor(0,0);
-     HD44780_PrintStr("temp:"); 
-     HD44780_SetCursor(0,1);
-     HD44780_PrintStr("fan:"); 
-     HD44780_SetCursor(7,1);
-     HD44780_PrintStr("off"); 
-     //HAL_Delay(1000);
+    bool enough =false;
+    HD44780_SetCursor(0, 0);
+    HD44780_PrintStr("temp:");
+    HD44780_SetCursor(0, 1);
+    HD44780_PrintStr("fan:");
+   
+    HAL_Delay(1000);
         
     int32_t temperature = BMP180_GetRawTemperature();
-		
-		//int32_t pressure = BMP180_GetPressure();
-		char buffer[50];
-   sprintf(buffer, "%d.%d  C    \n\r", (int) temperature / 10, (int) temperature % 10);
-		//sprintf(buffer, "Temperature: %d.%d deg C\n\rPressure: %d Pa\n\r", (int) temperature / 10, (int) temperature % 10, (int) pressure);
+			char buffer[50];
+    sprintf(buffer, "%d.%d  C    \n\r", (int) temperature / 10, (int) temperature % 10);
 		HAL_UART_Transmit(&huart2, (uint8_t*)&buffer, strlen(buffer), 1000);
 
      HD44780_SetCursor(6,0);
      HD44780_PrintStr(buffer);
      HAL_Delay(1000);
-    /* USER CODE END WHILE */
-    if(temperature/10 >= 26){
-      
+    
+     
+  if(temperature/10 >= 23 ){
+       enough =true;
       HD44780_SetCursor(6,1);
       HD44780_PrintStr("on  ");
         int x;
       for (x=0; x<625; x++){
-        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-        HAL_Delay(1);
-          }
-       for (x=625; x>0 ; x--){
-        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-        HAL_Delay(1);
-          }    
-
-      }  
-    }
-   
-    /* USER CODE BEGIN 3 */
+      __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x); 
+      HAL_Delay(10);
+      if(x==624){x=624;
+        break;}
+      }
+       __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+      
   }
-  /* USER CODE END 3 */
+  
+  if(temperature/10 < 22 ) {
+     
+      HD44780_SetCursor(6,1);
+      HD44780_PrintStr("off ");
+         /* int x;
+         for (x=625; x>0 ; x--){
+           
+        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+        HAL_Delay(10);
+         if(x==1){x=0;
+        break;}
+         }  */
+        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,0);
+        enough=false;
+  } 
+       } 
+ }
+
+   /*  else{
+    HD44780_SetCursor(6, 1);
+           HD44780_PrintStr("off");
+    __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,0);
+        HAL_Delay(10); 
+   } 
+  } */
+  
+  
+    
 
 
 /**
