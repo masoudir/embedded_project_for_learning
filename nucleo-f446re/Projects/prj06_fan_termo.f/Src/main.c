@@ -145,7 +145,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    bool enough =false;
+    //bool enough =false;
     HD44780_SetCursor(0, 0);
     HD44780_PrintStr("temp:");
     HD44780_SetCursor(0, 1);
@@ -163,8 +163,8 @@ int main(void)
      HAL_Delay(1000);
     
      
-  if(temperature/10 >= 23 ){
-       enough =true;
+  if(temperature/10 >= 24 ){
+       
       HD44780_SetCursor(6,1);
       HD44780_PrintStr("on  ");
         int x;
@@ -175,23 +175,26 @@ int main(void)
         break;}
       }
        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-      
+     // enough =true;
   }
   
-  if(temperature/10 < 22 ) {
+  else if(temperature/10 < 23 ) {
      
       HD44780_SetCursor(6,1);
       HD44780_PrintStr("off ");
-         /* int x;
-         for (x=625; x>0 ; x--){
+         // int x;
+         //for (x=625; x>0 ; x--){
            
-        __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
-        HAL_Delay(10);
-         if(x==1){x=0;
-        break;}
-         }  */
+        //__HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,x);
+        //HAL_Delay(10);
+         //if(x==1){
+        //  x=0;
+       // break;}
+         
+  
+      
         __HAL_TIM_SET_COMPARE(&htim1 , TIM_CHANNEL_1 ,0);
-        enough=false;
+       // enough=false;
   } 
        } 
  }
