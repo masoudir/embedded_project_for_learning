@@ -11,13 +11,13 @@ Temperature controlling is required in many places such as server rooms, houses,
 
 ## Temperature Thresholds:
 
-There are two temperature thresholds specified in the code (greater than 21 and less than 19).
+There are two temperature thresholds specified in the code (greater than 23 and less than 23).
 If the temperature rises above the upper threshold, the fan is turned on gradually.
 If the temperature falls below the lower threshold, the fan is turned off gradually.
 
 ## Hysteresis Range:
 
-The hysteresis range is the difference between the upper and lower thresholds (2100 - 1900 = 200).
+The hysteresis range is the difference between the upper and lower thresholds .
 This range prevents the fan from turning on and off rapidly around a specific temperature point, reducing unnecessary switching.
 Gradual Adjustment:
 
@@ -58,8 +58,13 @@ BMP180 module datasheet:
 2. Open the project in your preferred IDE
 3. Compile and upload the code to the NUCLEO_F446RE microcontroller
 
-### Images
+### Images & gif
 
  ![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/photo_2023-12-09_17-48-42.jpg)
 
  ![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/photo_2023-12-09_17-49-07.jpg)
+
+ ![Animated GIF](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/animation.gif)
+
+
+
