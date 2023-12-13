@@ -1,16 +1,8 @@
 
-#include "main.h"
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include"retarget.h"
-#include "GPIO.h"
-#include "UART.h"
-#include "Timer.h"
-#include "spi.h"
-#include "lcd.h"
 
+#include "main.h"
+
+#include <stdio.h>
 
 
 char buff[16];
@@ -23,101 +15,55 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 RTC_TimeTypeDef gTime;
 RTC_DateTypeDef  sDate;
+/* USER CODE END PV */
 
-UART_HandleTypeDef huart2;
-uint32_t count0=0;
-int mytime=0;
-int array[7]={0};
-LCD_mode lcdmode = LCD_mode_0;
-
-// void welcome_screen(void){
-//   printf("welcome message\r\n");
-// };
-
-// void home_screen(void){
-//   printf("home screen\r\n");
-  
-// };
-
-// void setting_screen(void){
-//   printf("setting manu\r\n");
-  
-// };
-
+/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_RTC_Init(void);
+static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
+static void MX_RTC_Init(void);
 
 
+/* void home_screen_for_UART() {
+    if(lcdmode==LCD_mode_1) {
+        printf(" home screen current time \r\n");
+        printf("Badmoodcounter now:%d \r\n", badmoodcount);
+        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
+        for(int i=0; i<7;i++) {
+          printf("The %d of 7days record %d\r\n", i, array[i]);
+        }
 
-
-  /*****************************below code is for button test***********************************/
-  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_12) == GPIO_PIN_RESET) {
-  //         //count0++;
-  //         //if(count0>=2){
-  //     HAL_UART_Transmit(&huart2, (const uint8_t*)"olivia", 7, 100);
-  //          // LCD_mode==LCD_mode_1;
-  //           //count0=0;
-  //         }
-  //        //}
-  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_11) == GPIO_PIN_RESET) {
-  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"hi", 3, 100); 
-  //       }
-  // if (HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_10) == GPIO_PIN_RESET) {
-  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"great", 6, 100);
-  //       }
-  // if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7) == GPIO_PIN_RESET) {
-  //         HAL_UART_Transmit(&huart2, (const uint8_t*)"ok", 3, 100);
-  //       }        
-
+    } 
+}
+ */
 
 int main(void)
 {
-  
+ 
   HAL_Init();
+
+
+  SystemClock_Config();
+
+ 
   MX_GPIO_Init();
   MX_USART2_UART_Init();
- 
   RetargetInit(&huart2);
-  printf("print before RTC");
   MX_RTC_Init();
-  printf("print after RTC");
-  MX_TIM2_Init();
-  MX_TIM3_Init();
-  spi_init();
-  lcd_init();
-  
-  
+
   while (1)
   {
-    /* USER CODE END WHILE */
-      if(lcdmode==LCD_mode_0){
-      Paint_Clear(WHITE);
-      lcd_welcome_screen();
-      welcome_screen_for_UART();
 
-
-
-
-
-
-      }
-      if(lcdmode==LCD_mode_1){
-       Paint_Clear(WHITE);
-       lcd_home_screen();
-       home_screen_for_UART();
-      }
-      if(lcdmode==LCD_mode_2){
-      Paint_Clear(WHITE);
-      lcd_setting_screen();
-       setting_screen_for_UART();
-      }
-    HAL_Delay(1000);
-     printf("-----------------------------------------------------------\r\n");
-    /* USER CODE BEGIN 3 */
+           HAL_RTC_GetTime(&hrtc , &gTime , RTC_FORMAT_BIN);
+     sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
+     printf("Date now:%s \r\n", buff);
+               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
+                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
+                   printf("time now:%s \r\n", buff2);
+                   HAL_Delay(1000);
   }
-  /* USER CODE END 3 */
 
-};
+}
 
 /**
   * @brief System Clock Configuration
@@ -136,9 +82,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 16;
@@ -167,7 +115,12 @@ void SystemClock_Config(void)
 }
 
 
-void MX_RTC_Init(void)
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
 {
 
   /* USER CODE BEGIN RTC_Init 0 */
@@ -238,16 +191,70 @@ void MX_RTC_Init(void)
 
  
  
- 
+
 }
+
 /**
-  * @brief SPI Initialization 
+  * @brief USART2 Initialization Function
   * @param None
   * @retval None
   */
-/* USER CODE BEGIN 4 */
+static void MX_USART2_UART_Init(void)
+{
 
-/* USER CODE END 4 */
+
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : B1_Pin */
+  GPIO_InitStruct.Pin = B1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+}
+
+
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -262,7 +269,7 @@ void Error_Handler(void)
   {
   }
   /* USER CODE END Error_Handler_Debug */
-};
+}
 
 #ifdef  USE_FULL_ASSERT
 /**
