@@ -30,6 +30,7 @@ extern "C" {
 #include "stm32f4xx_hal.h"
 #include "retarget.h"
 
+
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */

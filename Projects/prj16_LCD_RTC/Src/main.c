@@ -1,7 +1,8 @@
 
 
 #include "main.h"
-
+#include "lcd.h"
+#include "spi.h"
 #include <stdio.h>
 
 
@@ -50,6 +51,10 @@ int main(void)
   MX_USART2_UART_Init();
   RetargetInit(&huart2);
   MX_RTC_Init();
+  MX_GPIO_LCD_Init();
+  spi_init();
+  lcd_init();
+  lcd_test();
 
   while (1)
   {
