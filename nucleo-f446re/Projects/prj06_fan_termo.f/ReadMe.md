@@ -11,7 +11,7 @@ Temperature controlling is required in many places such as server rooms, houses,
 
 ## Temperature Thresholds:
 
-There are two temperature thresholds specified in the code (greater than 23 and less than 23).
+There are two temperature thresholds specified in the code (greater than 23 and less than 22).
 If the temperature rises above the upper threshold, the fan is turned on gradually.
 If the temperature falls below the lower threshold, the fan is turned off gradually.
 
@@ -28,6 +28,8 @@ In practical terms, the hysteresis in fan control system is designed to add stab
 Keep in mind that the specific values used in the code (temperature thresholds, hysteresis range, delays, etc.) should be tuned based on the characteristics of your system and the requirements of your application.
 
 ![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/hysteresis-2.jpg)
+
+ 
 
 ## Components used :
 
@@ -58,13 +60,17 @@ BMP180 module datasheet:
 2. Open the project in your preferred IDE
 3. Compile and upload the code to the NUCLEO_F446RE microcontroller
 
+### block diagram 
+
+![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/photo_2023-12-13_21-47-43.jpg)
+
 ### Images & gif
 
  ![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/photo_2023-12-09_17-48-42.jpg)
 
  ![image](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/photo_2023-12-09_17-49-07.jpg)
 
- ![Animated GIF](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/animation.gif)
+ ![Animated GIF](/embedded_project_for_learning/nucleo-f446re/Projects/prj06_fan_termo.f/video_2023-12-13_21-53-18.gif)
 
 
 

@@ -171,7 +171,7 @@ int main(void)
        active = true;
      }
     
-    else if (temperature /10 < 23 && active){
+    else if (temperature /10 < 22 && active){
      
       decrease_fan_speed_gradually();
       active = false;
