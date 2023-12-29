@@ -1,7 +1,5 @@
-#include"badmood.h"
-#include <stdio.h>
-#include <stdlib.h> 
-#include <stdint.h>
+
+#include "badmood.h"
 // extern int16_t badmoodcount;
 // extern uint32_t count0;
 // extern int mytime;
@@ -17,27 +15,11 @@
 // extern RTC_DateTypeDef  sDate;
 
 
-typedef enum {
-     LCD_mode_0,//welcome screen
-     LCD_mode_1,//home screen
-     LCD_mode_2,//setting
-} LCD_mode;
-// think below is a workspace, other functions can point to this space and work with the var inside. 
-typedef struct{
-    int count;
-    LCD_mode lcdmode;
-    int array[7];
-    uint8_t seconds;
-    RTC_TimeTypeDef gTime;
-    RTC_DateTypeDef  sDate;
- 
-}badmood_t; 
-
-
 void badmood_init(badmood_t * input){
     input->count=0;
     input->lcdmode=LCD_mode_0;
-    input->array[7]={};
+   // input->array = (int*){0,0,0,0,0,0,0};
+   memset(input->array,0,7*sizeof(int)); // pay attention to the size of intO
     input->seconds=0;
 
 };
@@ -51,10 +33,11 @@ void badmood_decrease_task(badmood_t * input){
 };
 
 
-//bad time task: 
-void badmood_time_task(badmood_t * input, RTC_HandleTypeDef *hrtc) {
-    HAL_RTC_GetTime(hrtc , &input->gTime , RTC_FORMAT_BIN);
-    HAL_RTC_GetDate(hrtc , &input->sDate , RTC_FORMAT_BIN);
+//bad time task: HAL_StatusTypeDef HAL_RTC_GetTime(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTime, uint32_t Format);
+
+void badmood_time_task(badmood_t * input, RTC_HandleTypeDef *hrtc_ptr) {
+    HAL_RTC_GetTime(hrtc_ptr , &input->gTime , RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(hrtc_ptr , &input->sDate , RTC_FORMAT_BIN);
 };
 
 //bad shift task: to shift to another day
