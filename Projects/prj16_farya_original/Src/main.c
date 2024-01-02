@@ -58,7 +58,7 @@ int main(void)
      sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
      printf("Date now:%s \r\n", buff);
                HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
-                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
+                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Year, sDate.Month, sDate.Date);
                    printf("time now:%s \r\n", buff2);
                    HAL_Delay(1000);
   }
@@ -155,8 +155,8 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 0x11;
-  sTime.Minutes = 0x11;
+  sTime.Hours = 0x17;
+  sTime.Minutes = 0x09;
   sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
@@ -164,10 +164,10 @@ static void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.WeekDay = RTC_WEEKDAY_TUESDAY;
   sDate.Month = RTC_MONTH_JANUARY;
-  sDate.Date = 0x1;
-  sDate.Year = 0x0;
+  sDate.Date = 0x02;
+  sDate.Year = 0x23;
 
   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
   {
