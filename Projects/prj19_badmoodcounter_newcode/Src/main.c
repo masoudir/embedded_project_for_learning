@@ -5,40 +5,16 @@
 #include "GPIO.h"
 #include "timer.h"
 
-char buff[16];
-char buff2[16];
+//char buff[16];
+//char buff2[16];
 
 RTC_HandleTypeDef hrtc;
-
 UART_HandleTypeDef huart2;
-
-/* USER CODE BEGIN PV */
-RTC_TimeTypeDef gTime;
-RTC_DateTypeDef  sDate;
-/* USER CODE END PV */
 badmood_t badmood_env;
 
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-//void MX_GPIO_Init(void);
-void MX_USART2_UART_Init(void);
-void MX_RTC_Init(void);
-void MX_TIM2_Init(void);
-void MX_TIM3_Init(void);
 
 
-/* void home_screen_for_UART() {
-    if(lcdmode==LCD_mode_1) {
-        printf(" home screen current time \r\n");
-        printf("Badmoodcounter now:%d \r\n", badmoodcount);
-        printf("time=%02d:%02d:%02d\r\n", hours, minutes, seconds);
-        for(int i=0; i<7;i++) {
-          printf("The %d of 7days record %d\r\n", i, array[i]);
-        }
 
-    } 
-}
- */
 
 int main(void)
 {
@@ -57,21 +33,9 @@ int main(void)
   MX_TIM3_Init();
   badmood_init(&badmood_env);
 
- /*while (1)
-  {
-
-           HAL_RTC_GetTime(&hrtc , &gTime , RTC_FORMAT_BIN);
-     sprintf (buff,"%2.2d:%2.2d:%2.2d",gTime.Hours,gTime.Minutes,gTime.Seconds);
-     printf("Date now:%s \r\n", buff);
-               HAL_RTC_GetDate(&hrtc , &sDate , RTC_FORMAT_BIN);
-                   sprintf (buff2,"20%2.2d.%2.2d.%2.2d", sDate.Date, sDate.Month, sDate.Year);
-                   printf("time now:%s \r\n", buff2);
-                   HAL_Delay(1000);
-  }
-*/
 
 while(1){
-
+badmood_time_task(&badmood_env, &hrtc);
 
 }
 
