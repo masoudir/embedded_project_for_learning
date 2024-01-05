@@ -30,13 +30,11 @@ int main(void)
   badmood_init(&badmood_env);
 
 
-while(1){
-badmood_time_task(&badmood_env, &hrtc);
-
-}
-
-
-
+  while(1){
+  badmood_update_time_and_date(&badmood_env, &hrtc);
+  badmood_update_UART_screen(&badmood_env, &huart2);
+  HAL_Delay(1000);
+  }
 }
 
 /**
@@ -105,8 +103,8 @@ void MX_RTC_Init(void)
 
   /* USER CODE END RTC_Init 0 */
 
-  RTC_TimeTypeDef sTime = {0};
-  RTC_DateTypeDef sDate = {0};
+  // RTC_TimeTypeDef sTime = {0};
+  // RTC_DateTypeDef sDate = {0};
   RTC_TamperTypeDef sTamper = {0};
 
   /* USER CODE BEGIN RTC_Init 1 */

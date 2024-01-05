@@ -32,7 +32,7 @@ typedef struct{
 void badmood_init(badmood_t * input);
 void badmood_increase_task(badmood_t * input);
 void badmood_decrease_task(badmood_t * input);
-void badmood_time_task(badmood_t * input, RTC_HandleTypeDef *hrtc_ptr);
-
+void badmood_update_time_and_date(badmood_t * input, RTC_HandleTypeDef *hrtc_ptr);
+void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart);
 
 #endif /* __BADMOOD_H */
