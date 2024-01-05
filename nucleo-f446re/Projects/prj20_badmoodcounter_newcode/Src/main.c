@@ -20,14 +20,10 @@ int main(void)
 {
  
   HAL_Init();
-
-
   SystemClock_Config();
-
- 
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  RetargetInit(&huart2);
+  //RetargetInit(&huart2);
   MX_RTC_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();

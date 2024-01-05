@@ -8,6 +8,8 @@
 #include "stm32f4xx_hal.h"
 #include "retarget.h"
 #include <string.h>
+#include "timer.h"
+
 
 typedef enum {
      LCD_mode_0,//welcome screen

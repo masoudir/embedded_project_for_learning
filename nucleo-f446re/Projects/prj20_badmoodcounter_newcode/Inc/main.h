@@ -29,6 +29,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include "retarget.h"
+#include "badmood.h"
 
 void Error_Handler(void);
 
@@ -52,9 +53,13 @@ void Error_Handler(void);
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
+  HAL_StatusTypeDef  HAL_Init(void);
+  void SystemClock_Config(void);
+  void MX_GPIO_Init(void);
+  void MX_USART2_UART_Init(void);
+  //RetargetInit(&huart2);
+  void MX_RTC_Init(void);
+  void badmood_init(badmood_t * input);
 
 #ifdef __cplusplus
 }
