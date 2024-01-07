@@ -50,68 +50,84 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
     char BUFFER_date[16]={0};
 
     HAL_RTC_GetTime(&hrtc , &input->gTime , RTC_FORMAT_BIN);// input->gTime
-    sprintf (BUFFER_time,"%2.2d:%2.2d:%2.2d",input->gTime.Hours,input->gTime.Minutes,input->gTime.Seconds);
+    sprintf (BUFFER_time,"%2.2d:%2.2d:%2.2d \r\n",input->gTime.Hours,input->gTime.Minutes,input->gTime.Seconds);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_time, 16, 1000);
 
     HAL_RTC_GetDate(&hrtc , &input->sDate , RTC_FORMAT_BIN);
-    sprintf (BUFFER_date,"20%2.2d.%2.2d.%2.2d", input->sDate.Year, input->sDate.Month, input->sDate.Date);
+    sprintf (BUFFER_date,"20%2.2d.%2.2d.%2.2d\r\n", input->sDate.Year, input->sDate.Month, input->sDate.Date);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_date, 16, 1000);              
     
     HAL_Delay(1000);
 
 
-// //  show the separat line
-//     char BUFFER_line[100]={0};
-//     sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
-//     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
-//    }
-
-
-
-//     if(input->lcdmode==LCD_mode_1) {
-
-//     char BUFFER_homescreen[100]={0};
-
-
-//         sprintf(BUFFER_homescreen, "home screen current time \r\n");
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_homescreen, 100, 1000);
-
-
-//     // show the time and date
-//     char BUFFER_time[16]={0};
-//     char BUFFER_date[16]={0};
-
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_time, 16, 1000);
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_date, 16, 1000);   
-
-//     // show current badmoodcount
-
-//         char BUFFER_badmoodwords[100]={0};
-
-
-//         sprintf(BUFFER_badmoodwords, "current badmood is \r\n");
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 100, 1000);
-//         HAL_UART_Transmit(huart, (uint8_t*)input->count, 100, 1000);
-
-//      // show late seven days records
-
-//         char BUFFER_7days[100]={0};
-
-
-//         sprintf(BUFFER_7days, "last 7days record:%d %d %d %d %d %d %d\r\n", input->array[0], input->array[1],input->array[2],input->array[3],input->array[4],input->array[5],input->array[6]);
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_7days, 100, 1000);
-
-      
+//  show the separat line
   
-//     } 
+
+    char BUFFER_line[100]={0};
+    sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
+   }
 
 
 
+   if(input->lcdmode==LCD_mode_1) {
 
-//         char BUFFER_settingscreen[100]={0};
+    char BUFFER_homescreen[100]={0};
 
-//    if(input->lcdmode==LCD_mode_2){
-//         sprintf(BUFFER_settingscreen, "This is setting screen\r\n");
-//         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_settingscreen, 100, 1000);
+
+        sprintf(BUFFER_homescreen, "home screen current time \r\n");
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_homescreen, 100, 1000);
+
+
+    // show the time and date
+
+
+    char BUFFER_time[16]={0};
+    char BUFFER_date[16]={0};
+
+    HAL_RTC_GetTime(&hrtc , &input->gTime , RTC_FORMAT_BIN);// input->gTime
+    sprintf (BUFFER_time,"%2.2d:%2.2d:%2.2d \r\n",input->gTime.Hours,input->gTime.Minutes,input->gTime.Seconds);
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_time, 16, 1000);
+
+    HAL_RTC_GetDate(&hrtc , &input->sDate , RTC_FORMAT_BIN);
+    sprintf (BUFFER_date,"20%2.2d.%2.2d.%2.2d\r\n", input->sDate.Year, input->sDate.Month, input->sDate.Date);
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_date, 16, 1000);              
+    
+    HAL_Delay(1000);
+
+    // show current badmoodcount
+
+        char BUFFER_badmoodwords[100]={0};
+        sprintf(BUFFER_badmoodwords, "current badmood is \r\n");
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 100, 1000);
+
+
+        char BUFFER_count[10]={0};
+        sprintf (BUFFER_count,"%d\r\n", input->count);
+        HAL_UART_Transmit(huart, (uint8_t*)BUFFER_count, 100, 1000);
+
+     // show late seven days records
+
+        char BUFFER_7days[100]={0};
+
+
+        sprintf(BUFFER_7days, "last 7days record:%d %d %d %d %d %d %d\r\n", input->array[0], input->array[1],input->array[2],input->array[3],input->array[4],input->array[5],input->array[6]);
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_7days, 100, 1000);
+
+        char BUFFER_line[100]={0};
+        sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
+  
     } 
+
+
+
+
+     
+
+  if(input->lcdmode==LCD_mode_2){
+        char BUFFER_settingscreen[100]={0};
+        sprintf(BUFFER_settingscreen, "This is setting screen\r\n");
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_settingscreen, 100, 1000);
+   } 
 }
