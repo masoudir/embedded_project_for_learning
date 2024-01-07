@@ -18,7 +18,7 @@ typedef enum {
 } LCD_mode;
 // imagine below is a workspace, other functions can point to this space and work with the vars inside. 
 typedef struct{
-    int count;
+    int badmoodcount;
     LCD_mode lcdmode;
     int array[7];
     uint8_t seconds;

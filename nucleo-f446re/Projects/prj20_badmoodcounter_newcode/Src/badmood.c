@@ -19,7 +19,7 @@ extern badmood_t badmood_env;
 
 
 void badmood_init(badmood_t * input){
-    input->count=0;
+    input->badmoodcount=0;
     input->lcdmode=LCD_mode_0;
    // input->array = (int*){0,0,0,0,0,0,0};
    memset(input->array,0,7*sizeof(int)); // pay attention to the size of intO
@@ -28,11 +28,11 @@ void badmood_init(badmood_t * input){
 };
 //bad mood task: to increase or decrease the count
 void badmood_increase_task(badmood_t * input){
-     input->count++;
+     input->badmoodcount++;
 };
 
 void badmood_decrease_task(badmood_t * input){
-     input->count--;
+     input->badmoodcount--;
 };
 
 void badmood_update_time_and_date(badmood_t * input, RTC_HandleTypeDef *hrtc_ptr) {
@@ -72,16 +72,12 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
    if(input->lcdmode==LCD_mode_1) {
 
-    char BUFFER_homescreen[100]={0};
-
-
-        sprintf(BUFFER_homescreen, "home screen current time \r\n");
-        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_homescreen, 100, 1000);
+    char BUFFER_homescreen[30]={0};
+    sprintf(BUFFER_homescreen, "home screen current time \r\n");
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_homescreen, 30, 1000);
 
 
     // show the time and date
-
-
     char BUFFER_time[16]={0};
     char BUFFER_date[16]={0};
 
@@ -103,7 +99,7 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
 
         char BUFFER_count[10]={0};
-        sprintf (BUFFER_count,"%d\r\n", input->count);
+        sprintf (BUFFER_count,"%d\r\n", input->badmoodcount);
         HAL_UART_Transmit(huart, (uint8_t*)BUFFER_count, 100, 1000);
 
      // show late seven days records
