@@ -129,5 +129,10 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
         char BUFFER_settingscreen[100]={0};
         sprintf(BUFFER_settingscreen, "This is setting screen\r\n");
         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_settingscreen, 100, 1000);
+        
+        char BUFFER_line[100]={0};
+        sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
+
    } 
 }
