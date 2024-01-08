@@ -43,7 +43,7 @@ void MX_TIM2_Init(void)
         Divide the timer-2 input frequency (16Mhz)
         by a factor of 1000 (16,000,000/1,000 = 16,000 = 16Khz) 
     */
-    htim2.Init.Prescaler   = 1000;
+    htim2.Init.Prescaler   = 5000;
     
     #if (UP_COUNTER)
      /* Up-Counter mode*/
@@ -63,7 +63,7 @@ void MX_TIM2_Init(void)
                      = 1600
                      = 0x1F40
     */
-    htim2.Init.Period = 1600;
+    htim2.Init.Period = 3200;
         
     /*
         Finally initialize Timer-2
@@ -180,7 +180,7 @@ void TIM3_IRQHandler(void)
         
   mytime++;
   badmood_env.array[0]=badmood_env.badmoodcount;
-  if(mytime==10){ 
+  if(mytime==50){ 
       for (int j = 5; j >= 0; j--) {
         badmood_env.array[j+1] = badmood_env.array[j];
       }; 

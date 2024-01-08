@@ -93,15 +93,12 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
     // show current badmoodcount
 
-        char BUFFER_badmoodwords[100]={0};
-        sprintf(BUFFER_badmoodwords, "current badmood is \r\n");
-        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 100, 1000);
+        char BUFFER_badmoodwords[50]={0};
+        sprintf(BUFFER_badmoodwords, "current badmood is %d\r\n", input->badmoodcount);
+        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 50, 1000);
 
 
-        char BUFFER_count[10]={0};
-        sprintf (BUFFER_count,"%d\r\n", input->badmoodcount);
-        HAL_UART_Transmit(huart, (uint8_t*)BUFFER_count, 100, 1000);
-
+   
      // show late seven days records
 
         char BUFFER_7days[100]={0};
