@@ -24,6 +24,7 @@ void badmood_init(badmood_t * input){
    // input->array = (int*){0,0,0,0,0,0,0};
    memset(input->array,0,7*sizeof(int)); // pay attention to the size of intO
     input->seconds=0;
+    input->Is_shifting_count_happened=false;
 
 };
 //bad mood task: to increase or decrease the count
@@ -128,4 +129,22 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
         HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
 
    } 
+}
+
+
+void badmood_day_shift(badmood_t*input){
+  
+  input->array[0]=input->badmoodcount;
+
+      for (int j = 5; j >= 0; j--) {
+        input->array[j+1] = input->array[j];
+      }; 
+   
+      input->badmoodcount=0;
+      input->array[0]=0;
+      //mytime=0;
+  
+}
+bool badmood_is_right_time_to_save_count(badmood_t*input, RTC_HandleTypeDef*hrtc){
+
 }
