@@ -50,11 +50,10 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
     char BUFFER_time[16]={0};
     char BUFFER_date[16]={0};
 
-    HAL_RTC_GetTime(&hrtc , &input->gTime , RTC_FORMAT_BIN);// input->gTime
+   
     sprintf (BUFFER_time,"%2.2d:%2.2d:%2.2d \r\n",input->gTime.Hours,input->gTime.Minutes,input->gTime.Seconds);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_time, 16, 1000);
 
-    HAL_RTC_GetDate(&hrtc , &input->sDate , RTC_FORMAT_BIN);
     sprintf (BUFFER_date,"20%2.2d.%2.2d.%2.2d\r\n", input->sDate.Year, input->sDate.Month, input->sDate.Date);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_date, 16, 1000);              
     
@@ -82,11 +81,11 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
     char BUFFER_time[16]={0};
     char BUFFER_date[16]={0};
 
-    HAL_RTC_GetTime(&hrtc , &input->gTime , RTC_FORMAT_BIN);// input->gTime
+  
     sprintf (BUFFER_time,"%2.2d:%2.2d:%2.2d \r\n",input->gTime.Hours,input->gTime.Minutes,input->gTime.Seconds);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_time, 16, 1000);
 
-    HAL_RTC_GetDate(&hrtc , &input->sDate , RTC_FORMAT_BIN);
+  
     sprintf (BUFFER_date,"20%2.2d.%2.2d.%2.2d\r\n", input->sDate.Year, input->sDate.Month, input->sDate.Date);
     HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_date, 16, 1000);              
     
@@ -94,25 +93,26 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
     // show current badmoodcount
 
-        char BUFFER_badmoodwords[50]={0};
-        sprintf(BUFFER_badmoodwords, "current badmood is %d\r\n", input->badmoodcount);
-        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 50, 1000);
+    char BUFFER_badmoodwords[50]={0};
+    sprintf(BUFFER_badmoodwords, "current badmood is %d\r\n", input->badmoodcount);
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_badmoodwords, 50, 1000);
 
 
-   
-     // show late seven days records
 
-        char BUFFER_7days[100]={0};
+    // show late seven days records
+
+    char BUFFER_7days[100]={0};
 
 
-        sprintf(BUFFER_7days, "last 7days record:%d %d %d %d %d %d %d\r\n", input->array[0], input->array[1],input->array[2],input->array[3],input->array[4],input->array[5],input->array[6]);
-        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_7days, 100, 1000);
+    sprintf(BUFFER_7days, "last 7days record:%d %d %d %d %d %d %d\r\n", input->array[0], input->array[1],input->array[2],input->array[3],input->array[4],input->array[5],input->array[6]);
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_7days, 100, 1000);
 
-        char BUFFER_line[100]={0};
-        sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
-        HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
+    char BUFFER_line[100]={0};
+    sprintf(BUFFER_line, "-----------------------------------------------------------------\r\n");
+    HAL_UART_Transmit(huart, (const uint8_t*)BUFFER_line, 100, 1000);
   
     } 
+
 
 
 
@@ -133,18 +133,35 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
 
 void badmood_day_shift(badmood_t*input){
-  
-  input->array[0]=input->badmoodcount;
+    if (badmood_is_right_time_to_save_count){
+    input->array[0]=input->badmoodcount;
 
-      for (int j = 5; j >= 0; j--) {
-        input->array[j+1] = input->array[j];
-      }; 
-   
-      input->badmoodcount=0;
-      input->array[0]=0;
-      //mytime=0;
-  
+        for (int j = 5; j >= 0; j--) {
+            input->array[j+1] = input->array[j];
+        }; 
+    
+        input->badmoodcount=0;
+        input->array[0]=0;
+        //mytime=0;
+    
+    }
 }
-bool badmood_is_right_time_to_save_count(badmood_t*input, RTC_HandleTypeDef*hrtc){
+
+
+bool badmood_is_right_time_to_save_count(badmood_t*input){
+    if(input->gTime.Hours == 0 && input->gTime.Minutes == 0 && input->gTime.Seconds == 0){
+    input->Is_shifting_count_happened=true;
+    }
+
+
+    if (input->Is_shifting_count_happened){
+        return false;
+    }
+    else{
+        return ture;
+    }
 
 }
+
+
+
