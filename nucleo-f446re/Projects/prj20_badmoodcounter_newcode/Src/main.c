@@ -32,6 +32,8 @@ int main(void)
 
   while(1){
   badmood_update_time_and_date(&badmood_env, &hrtc);
+  badmood_is_right_time_to_save_count(&badmood_env);
+  badmood_day_shift(&badmood_env);
   badmood_update_UART_screen(&badmood_env, &huart2);
   HAL_Delay(1000);
   }

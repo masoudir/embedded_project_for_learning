@@ -1,5 +1,6 @@
 
 #include "badmood.h"
+#include<stdbool.h>
 // extern int16_t badmoodcount;
 // extern uint32_t count0;
 // extern int mytime;
@@ -114,11 +115,6 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
     } 
 
 
-
-
-
-     
-
   if(input->lcdmode==LCD_mode_2){
         char BUFFER_settingscreen[100]={0};
         sprintf(BUFFER_settingscreen, "This is setting screen\r\n");
@@ -133,35 +129,64 @@ void badmood_update_UART_screen(badmood_t *input, UART_HandleTypeDef *huart){
 
 
 void badmood_day_shift(badmood_t*input){
-    if (badmood_is_right_time_to_save_count){
+    if (badmood_is_right_time_to_save_count(uint8_t input->gTime.Minutes)){
     input->array[0]=input->badmoodcount;
-
-        for (int j = 5; j >= 0; j--) {
+       for (int j = 5; j >= 0; j--) {
             input->array[j+1] = input->array[j];
         }; 
     
         input->badmoodcount=0;
         input->array[0]=0;
-        //mytime=0;
-    
+        //mytime=0;   
     }
 }
 
 
 bool badmood_is_right_time_to_save_count(badmood_t*input){
-    if(input->gTime.Hours == 0 && input->gTime.Minutes == 0 && input->gTime.Seconds == 0){
-    input->Is_shifting_count_happened=true;
-    }
+     bool B=false;
+    
+    if((input->gTime.Minutes == 0)&&(B == false)){
+    B = true;
+    return true;
+}
+else if ((input->gTime.Minutes != 0)&&(B == true) ){
+    B = false;
+    return false;
+} 
+else if((input->gTime.Minutes == 0)&&(B == false)){
+    B = true;
+    return true;
+}
+else if((input->gTime.Minutes == 0)&&(B == true)){
+    B = false;
+    return false;
+}
+   
+    
 
 
-    if (input->Is_shifting_count_happened){
-        return false;
-    }
-    else{
-        return ture;
-    }
+
+    // if((input->gTime.Hours == 0 && input->gTime.Minutes == 0 && input->gTime.Seconds == 0)&&(B == false)){
+    //     B = true;
+    //     return true;
+    // }
+    // else if ((input->gTime.Hours != 0 || input->gTime.Minutes != 0 || input->gTime.Seconds != 0))&&(B == true) {
+    //     B = false;
+    //     return false;
+    // } 
+    // else if((input->gTime.Hours == 0 && input->gTime.Minutes == 0 && input->gTime.Seconds == 0)&&(B == false)){
+    //     B = true;
+    //     return true;
+    // }
+    // else if((input->gTime.Hours == 0 && input->gTime.Minutes == 0 && input->gTime.Seconds == 0)&&(B == true)){
+    //     B = false;
+    //     return false;
+    // }
 
 }
+
+
+
 
 
 
