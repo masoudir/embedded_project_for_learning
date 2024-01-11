@@ -23,7 +23,7 @@ int main(void)
   SystemClock_Config();
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  //RetargetInit(&huart2);
+  RetargetInit(&huart2);
   MX_RTC_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
@@ -32,8 +32,10 @@ int main(void)
 
   while(1){
   badmood_update_time_and_date(&badmood_env, &hrtc);
-  badmood_is_right_time_to_save_count(&badmood_env);
-  badmood_day_shift(&badmood_env);
+  if(badmood_is_right_time_to_save_count(&badmood_env)) {
+    badmood_day_shift(&badmood_env,&huart2);
+  }
+  
   badmood_update_UART_screen(&badmood_env, &huart2);
   HAL_Delay(1000);
   }
